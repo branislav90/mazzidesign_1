@@ -46,6 +46,7 @@ Dev admin login (seeded automatically): `admin@woodwork.local` / `Admin!Dev2026`
 - [x] **M5–M7 — Configurator + 3D**: full catalog (5 categories, 15 item groups), Zustand store = enquiry payload, 6-step wizard, 9 procedural R3F generators, species tinting + finish roughness, human-scale silhouette, derived measurements
 - [x] **M8 — Enquiry flow**: 3D snapshot + photo upload, `POST /api/enquiries`, workshop email with inline snapshot + JSON attachment, success page with `ENQ-YYYY-NNNN` reference, admin enquiry detail
 - [x] **Section images**: hero / rooms / video-cover photos manageable from the admin (media picker in Vsebina strani); wood-grain SVG placeholders render until a photo is set
+- [x] **Enquiry entry chooser**: `/configure` offers 3D configurator or a simple free-text enquiry (message + up to 3 photos, category `general`); the configurator starts fresh on every entry
 - [x] Fixes after review: project image upload (`DbUpdateConcurrencyException`), duplicate image in upload response
 
 ## Status — remaining
