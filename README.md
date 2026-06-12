@@ -40,11 +40,9 @@ Dev admin login (seeded automatically): `admin@woodwork.local` / `Admin!Dev2026`
 ## Status
 
 - [x] **M1 — Scaffold**: monorepo, Next 14 + Tailwind tokens from `design/hrast.html`, .NET 8 solution (Api/Domain/Infrastructure + tests), EF Core + initial Identity migration, JWT auth skeleton (login / refresh rotation / logout), Serilog, Swagger, docker-compose MSSQL + smtp4dev
-- [ ] M2 — CMS backend (entities, seed content, public + admin endpoints, media pipeline, revalidation webhook)
-- [ ] M3 — Landing port (CMS-driven, pixel-faithful to `design/hrast.html`)
-- [ ] M4 — Admin UI
-- [ ] M5 — Configurator: catalog + store + wizard shell
-- [ ] M6 — 3D core
-- [ ] M7 — Remaining 3D generators + material/extras
-- [ ] M8 — Enquiry flow
-- [ ] M9 — Polish (Slovenian content, a11y, tests, Lighthouse)
+- [x] **M2 — CMS backend**: Project/PageSection/MediaAsset/Enquiry entities, `CmsCore` migration, seed (full landing copy sl+en, 6 sample projects), public + admin endpoints, ImageSharp media pipeline, MailKit enquiry email, rate limiting, revalidation webhook
+- [x] **M3 — Landing port**: pixel-faithful hrast port, fully CMS-driven with fallback, gallery category filter + keyboard lightbox, all CTAs → `/configure`
+- [x] **M4 — Admin UI**: cookie-based auth proxy, dashboard, projects editor (sl/en, images, publish), typed page-content forms, media library, enquiries view
+- [x] **M5–M7 — Configurator + 3D**: full §6 catalog, Zustand store, 6-step wizard, 9 procedural R3F generators, species/finish materials, human-scale silhouette
+- [x] **M8 — Enquiry flow**: snapshot + photo upload, `POST /api/enquiries`, workshop email, success page with reference, admin enquiry detail with status + notes
+- [ ] M9 — Polish (content pass, a11y audit, more tests, Lighthouse)
