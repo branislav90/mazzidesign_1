@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import {
   categoryLabel,
+  enquiryItemTypeLabel,
   ENQUIRY_STATUSES,
   EnquiryStatus,
   formatDate,
@@ -95,7 +96,7 @@ export default function AdminEnquiriesPage() {
                       {formatDate(e.createdAt)}
                     </td>
                     <td className="px-4 py-2 text-neutral-700">
-                      {categoryLabel(e.category)} → {e.itemType}
+                      {categoryLabel(e.category)} → {enquiryItemTypeLabel(e.itemType)}
                     </td>
                     <td className="px-4 py-2 text-neutral-700">
                       {e.contactName}

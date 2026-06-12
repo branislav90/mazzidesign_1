@@ -42,7 +42,11 @@ export default function Wizard({ locale }: { locale: Locale }) {
   const maxStepIndex = useConfigurator((s) => s.maxStepIndex);
   const goToStep = useConfigurator((s) => s.goToStep);
   const setLocale = useConfigurator((s) => s.setLocale);
+  const reset = useConfigurator((s) => s.reset);
 
+  // Every entry into the configurator starts fresh — the in-memory store
+  // would otherwise resume the previous session's state after navigation.
+  useEffect(() => reset(), [reset]);
   useEffect(() => setLocale(locale), [locale, setLocale]);
 
   const steps = visibleSteps({ category, itemType });

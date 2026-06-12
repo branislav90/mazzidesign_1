@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import {
   categoryLabel,
+  enquiryItemTypeLabel,
   ENQUIRY_STATUSES,
   EnquiryDetail,
   EnquiryStatus,
@@ -55,7 +56,7 @@ function ConfigurationCard({ enquiry }: { enquiry: EnquiryDetail }) {
       </h2>
       <dl>
         <Row label="Kategorija">{categoryLabel(enquiry.category)}</Row>
-        <Row label="Izdelek">{enquiry.itemType}</Row>
+        <Row label="Izdelek">{enquiryItemTypeLabel(enquiry.itemType)}</Row>
         {enquiry.shape && <Row label="Oblika">{enquiry.shape}</Row>}
         <Row label="Dimenzije (mm)">
           {dims.length === 0 ? (

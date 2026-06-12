@@ -60,7 +60,13 @@ export const ENQUIRY_STATUSES: { value: EnquiryStatus; label: string }[] = [
 ];
 
 export function categoryLabel(value: string): string {
+  if (value === "general") return "Splošno povpraševanje";
   return PROJECT_CATEGORIES.find((c) => c.value === value)?.label ?? value;
+}
+
+/** Item type as shown in enquiry views; plain enquiries carry 'general'. */
+export function enquiryItemTypeLabel(value: string): string {
+  return value === "general" ? "—" : value;
 }
 
 export function speciesLabel(value: string): string {
