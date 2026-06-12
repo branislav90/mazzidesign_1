@@ -19,11 +19,106 @@ html {
 body {
   background: var(--white);
   color: var(--ink);
+  font-size: 16.5px;
+  line-height: 1.75;
 }
 
 ::selection {
   background: var(--sand);
   color: var(--ink);
+}
+
+@layer components {
+  /* container — .wrap from hrast */
+  .wrap {
+    max-width: 1280px;
+    margin-inline: auto;
+    padding-inline: clamp(22px, 4vw, 56px);
+  }
+
+  /* letterspaced small-caps label — .caps from hrast */
+  .caps {
+    font-size: 11.5px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--soft);
+    font-weight: 600;
+  }
+
+  /* reveal: slow, blurred, luxurious — .rv from hrast */
+  .rv {
+    opacity: 0;
+    transform: translateY(26px);
+    filter: blur(6px);
+    transition:
+      opacity 1.3s var(--ease),
+      transform 1.3s var(--ease),
+      filter 1.3s var(--ease);
+  }
+  .rv.in {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+
+  /* hero entrance animations */
+  .anim-fade {
+    opacity: 0;
+    animation: hrast-f 1.4s var(--ease) forwards;
+  }
+  .anim-up {
+    transform: translateY(108%);
+    animation: hrast-up 1.4s var(--ease) forwards;
+  }
+
+  /* pill button with fill-from-below hover — .btn from hrast */
+  .btn {
+    display: inline-block;
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    padding: 18px 44px;
+    font-size: 12.5px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: color 0.5s var(--ease);
+  }
+  .btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    transform: translateY(101%);
+    transition: transform 0.5s var(--ease);
+    z-index: -1;
+  }
+  .btn:hover {
+    color: var(--white);
+  }
+  .btn:hover::before {
+    transform: none;
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes hrast-up {
+  to {
+    transform: none;
+  }
+}
+@keyframes hrast-f {
+  to {
+    opacity: 1;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -34,7 +129,19 @@ body {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  .rv,
+  .anim-fade {
+    opacity: 1;
+    animation: none;
+  }
+  .rv,
+  .anim-up {
+    transform: none;
+    filter: none;
+    animation: none;
   }
 }

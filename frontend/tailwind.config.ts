@@ -24,7 +24,10 @@ const config: Config = {
         hrast: "cubic-bezier(0.16, 1, 0.3, 1)",
       },
       letterSpacing: {
-        label: "0.22em", // letterspaced small-caps section labels
+        label: "0.22em", // letterspaced small-caps nav links / chapter links
+        caps: "0.32em", // .caps section labels
+        brand: "0.34em", // centered serif brand
+        btn: "0.24em", // pill button
       },
     },
   },
