@@ -1,11 +1,9 @@
-// Enquiry configurator wizard — guided multi-step builder with live 3D preview.
-// Implemented in Milestones 5–8.
+import { cookies } from "next/headers";
+import Wizard from "@/components/configurator/Wizard";
+import type { Locale } from "@/lib/configurator/i18n";
+
 export default function ConfigurePage() {
-  return (
-    <main className="flex min-h-screen items-center justify-center px-6">
-      <p className="text-xs uppercase tracking-label text-soft">
-        Konfigurator — v pripravi
-      </p>
-    </main>
-  );
+  const cookie = cookies().get("locale")?.value;
+  const locale: Locale = cookie === "en" ? "en" : "sl";
+  return <Wizard locale={locale} />;
 }
