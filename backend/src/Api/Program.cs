@@ -1,11 +1,20 @@
 using System.Text;
+using System.Threading.RateLimiting;
 using Api.Auth;
+using Api.Seed;
+using Api.Services;
 using Domain.Entities;
+using FluentValidation;
 using Infrastructure;
+using Infrastructure.Email;
+using Infrastructure.Media;
 using Infrastructure.Persistence;
+using Infrastructure.Storage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 
@@ -59,6 +68,35 @@ try
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
+    // CMS services: storage, media pipeline, email, URL building, validation, revalidation.
+    var storageRoot = builder.Configuration["Storage:Root"] is { Length: > 0 } configuredRoot
+        ? Path.GetFullPath(configuredRoot, builder.Environment.ContentRootPath)
+        : Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", "..", "storage"));
+    builder.Services.AddSingleton<IFileStorage>(new LocalFileStorage(storageRoot));
+    builder.Services.AddSingleton<MediaProcessingService>();
+    builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection(SmtpOptions.SectionName));
+    builder.Services.AddSingleton<EnquiryEmailSender>();
+    builder.Services.AddHttpContextAccessor();
+    builder.Services.AddScoped<MediaUrlBuilder>();
+    builder.Services.AddHttpClient();
+    builder.Services.AddSingleton<FrontendRevalidator>();
+    builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
+    // 5 requests/minute/IP on the anonymous enquiry endpoints.
+    builder.Services.AddRateLimiter(options =>
+    {
+        options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+        options.AddPolicy("enquiries", httpContext =>
+            RateLimitPartition.GetFixedWindowLimiter(
+                httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = 5,
+                    Window = TimeSpan.FromMinutes(1),
+                    QueueLimit = 0,
+                }));
+    });
+
     builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
         policy.WithOrigins(builder.Configuration.GetSection("Cors:Origins").Get<string[]>() ?? [])
             .AllowAnyHeader()
@@ -76,7 +114,16 @@ try
     }
 
     app.UseSerilogRequestLogging();
+
+    // Uploaded media: backend/storage served at /uploads (absolute URLs built by MediaUrlBuilder).
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(storageRoot),
+        RequestPath = "/uploads",
+    });
+
     app.UseCors();
+    app.UseRateLimiter();
     app.UseAuthentication();
     app.UseAuthorization();
     app.MapControllers();
@@ -104,6 +151,9 @@ static async Task ApplyMigrationsAndSeedAsync(WebApplication app)
     {
         await roleManager.CreateAsync(new IdentityRole<Guid>("Admin"));
     }
+
+    var seedLogger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("CmsSeeder");
+    await CmsSeeder.SeedAsync(db, seedLogger);
 
     var email = app.Configuration["Admin:Email"];
     var password = app.Configuration["Admin:Password"];
