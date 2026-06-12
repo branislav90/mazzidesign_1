@@ -68,6 +68,7 @@ public static class SectionSchemas
                     RequireString(cap, "meta", errors, "imageCaption.");
                 }
 
+                OptionalGuid(obj, "imageId", errors);
                 break;
 
             case "statement":
@@ -109,6 +110,8 @@ public static class SectionSchemas
                         {
                             errors.Add($"{p}species is required and must be a string.");
                         }
+
+                        OptionalGuid(room, "imageId", errors, p);
                     }
                 }
 
@@ -126,6 +129,7 @@ public static class SectionSchemas
                 RequireString(obj, "captionMeta", errors);
                 NullableString(obj, "youtubeId", errors);
                 NullableString(obj, "videoUrl", errors);
+                OptionalGuid(obj, "coverImageId", errors);
                 break;
 
             case "testimonial":
@@ -215,6 +219,20 @@ public static class SectionSchemas
     /// <summary>Property must be a string or null (absence also allowed).</summary>
     private static void NullableString(JsonObject obj, string name, List<string> errors) =>
         OptionalString(obj, name, errors);
+
+    /// <summary>Property may be absent or null; when present it must be a GUID string (a MediaAsset id).</summary>
+    private static void OptionalGuid(JsonObject obj, string name, List<string> errors, string prefix = "")
+    {
+        if (!obj.ContainsKey(name) || obj[name] is null)
+        {
+            return;
+        }
+
+        if (TryGetString(obj, name) is not { } s || !Guid.TryParse(s, out _))
+        {
+            errors.Add($"{prefix}{name} must be a media asset id (GUID) when present.");
+        }
+    }
 
     private static JsonArray? RequireArray(JsonObject obj, string name, List<string> errors)
     {

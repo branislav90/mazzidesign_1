@@ -120,12 +120,22 @@ export default function Rooms({ items }: { items: RoomItem[] }) {
                   : "[clip-path:inset(6%_6%_6%_6%_round_20px)]"
               }`}
             >
-              <WoodGrain
-                pattern={patternForSpecies(item.species)}
-                grain={CHAPTER_GRAINS[i % CHAPTER_GRAINS.length]}
-                viewBox="0 0 700 800"
-                className="absolute inset-[-8%] h-[116%] w-[116%]"
-              />
+              {item.image ? (
+                // eslint-disable-next-line @next/next/no-img-element -- remote CMS host, dimensions fluid
+                <img
+                  src={item.image.url}
+                  alt={item.image.alt}
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              ) : (
+                <WoodGrain
+                  pattern={patternForSpecies(item.species)}
+                  grain={CHAPTER_GRAINS[i % CHAPTER_GRAINS.length]}
+                  viewBox="0 0 700 800"
+                  className="absolute inset-[-8%] h-[116%] w-[116%]"
+                />
+              )}
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_60%,#1A140EA8)]"

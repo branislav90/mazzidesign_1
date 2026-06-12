@@ -64,12 +64,22 @@ export default function Video({
               aria-label={t.play}
               className="group absolute inset-0 block cursor-pointer text-left"
             >
-              <WoodGrain
-                pattern="g2"
-                grain="w2"
-                viewBox="0 0 1400 800"
-                className="absolute inset-[-8%] h-[116%] w-[116%] brightness-[.55]"
-              />
+              {section.coverImage ? (
+                // eslint-disable-next-line @next/next/no-img-element -- remote CMS host, dimensions fluid
+                <img
+                  src={section.coverImage.url}
+                  alt={section.coverImage.alt}
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover brightness-[.55]"
+                />
+              ) : (
+                <WoodGrain
+                  pattern="g2"
+                  grain="w2"
+                  viewBox="0 0 1400 800"
+                  className="absolute inset-[-8%] h-[116%] w-[116%] brightness-[.55]"
+                />
+              )}
               <span
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,#1A140E99)]"

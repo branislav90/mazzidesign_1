@@ -14,6 +14,7 @@ import {
   TextAreaField,
   TextField,
 } from "./fields";
+import ImagePickerField from "./ImagePickerField";
 
 // ---------------------------------------------------------------------------
 // Shared zod helpers
@@ -53,7 +54,14 @@ export interface SectionDef<T = unknown> {
   /** Cleans the draft right before serializing (drop empty optionals etc.). */
   serialize: (value: T) => unknown;
   Form: (props: FormProps<T>) => ReactNode;
+  /**
+   * Copies locale-independent fields (image ids) from the just-edited draft
+   * into the other locale's draft, so a picked image applies to SL and EN alike.
+   */
+  mirrorShared?: (changed: T, other: T) => T;
 }
+
+const optionalImageId = z.string().uuid().nullable().optional();
 
 // --- hero -------------------------------------------------------------------
 
@@ -62,6 +70,7 @@ interface HeroJson {
   titleLines: { text: string; em?: string }[];
   sub: string;
   imageCaption: { title: string; meta: string };
+  imageId?: string | null;
 }
 
 const heroDef: SectionDef<HeroJson> = {
@@ -71,17 +80,20 @@ const heroDef: SectionDef<HeroJson> = {
     titleLines: [],
     sub: "",
     imageCaption: { title: "", meta: "" },
+    imageId: null,
   },
   schema: z.object({
     label: str,
     titleLines: z.array(z.object({ text: str.min(1), em: str.optional() })).min(1),
     sub: str,
     imageCaption: z.object({ title: str, meta: str }),
+    imageId: optionalImageId,
   }),
   serialize: (v) => ({
     ...v,
     titleLines: v.titleLines.map((l) => stripEmpty(l, ["em"])),
   }),
+  mirrorShared: (changed, other) => ({ ...other, imageId: changed.imageId ?? null }),
   Form: ({ value, onChange }) => (
     <div className="space-y-4">
       <TextField
@@ -113,6 +125,11 @@ const heroDef: SectionDef<HeroJson> = {
         label="Podnaslov (sub)"
         value={value.sub}
         onChange={(sub) => onChange({ ...value, sub })}
+      />
+      <ImagePickerField
+        label="Velika slika (razširjajoča se ob drsenju)"
+        value={value.imageId}
+        onChange={(imageId) => onChange({ ...value, imageId })}
       />
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <TextField
@@ -177,6 +194,7 @@ interface RoomItem {
   linkText: string;
   imageTag: { title: string; meta: string };
   species: string;
+  imageId?: string | null;
 }
 
 interface RoomsJson {
@@ -195,10 +213,18 @@ const roomsDef: SectionDef<RoomsJson> = {
         linkText: str,
         imageTag: z.object({ title: str, meta: str }),
         species: z.enum(["oak", "walnut", "ash", "smoked_oak", "other"]),
+        imageId: optionalImageId,
       }),
     ),
   }),
   serialize: (v) => v,
+  mirrorShared: (changed, other) => ({
+    ...other,
+    items: other.items.map((it, i) => ({
+      ...it,
+      imageId: changed.items[i]?.imageId ?? null,
+    })),
+  }),
   Form: ({ value, onChange }) => (
     <Repeater
       label="Prostori"
@@ -211,6 +237,7 @@ const roomsDef: SectionDef<RoomsJson> = {
         linkText: "",
         imageTag: { title: "", meta: "" },
         species: "oak",
+        imageId: null,
       })}
       renderItem={(item, update) => (
         <div className="space-y-3">
@@ -258,6 +285,11 @@ const roomsDef: SectionDef<RoomsJson> = {
               options={SPECIES_OPTIONS}
             />
           </div>
+          <ImagePickerField
+            label="Fotografija prostora"
+            value={item.imageId}
+            onChange={(imageId) => update({ ...item, imageId })}
+          />
         </div>
       )}
     />
@@ -301,6 +333,7 @@ interface VideoJson {
   videoUrl: string | null;
   captionTitle: string;
   captionMeta: string;
+  coverImageId?: string | null;
 }
 
 const videoDef: SectionDef<VideoJson> = {
@@ -312,6 +345,7 @@ const videoDef: SectionDef<VideoJson> = {
     videoUrl: null,
     captionTitle: "",
     captionMeta: "",
+    coverImageId: null,
   },
   schema: z.object({
     label: str,
@@ -320,11 +354,16 @@ const videoDef: SectionDef<VideoJson> = {
     videoUrl: urlOrEmpty.nullable(),
     captionTitle: str,
     captionMeta: str,
+    coverImageId: optionalImageId,
   }),
   serialize: (v) => ({
     ...v,
     youtubeId: v.youtubeId?.trim() ? v.youtubeId.trim() : null,
     videoUrl: v.videoUrl?.trim() ? v.videoUrl.trim() : null,
+  }),
+  mirrorShared: (changed, other) => ({
+    ...other,
+    coverImageId: changed.coverImageId ?? null,
   }),
   Form: ({ value, onChange }) => (
     <div className="space-y-4">
@@ -360,6 +399,11 @@ const videoDef: SectionDef<VideoJson> = {
           onChange={(captionMeta) => onChange({ ...value, captionMeta })}
         />
       </div>
+      <ImagePickerField
+        label="Naslovna slika videa"
+        value={value.coverImageId}
+        onChange={(coverImageId) => onChange({ ...value, coverImageId })}
+      />
     </div>
   ),
 };

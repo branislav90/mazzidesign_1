@@ -37,6 +37,9 @@ export interface HeroSection {
   titleLines: { text: string; em?: string }[];
   sub: string;
   imageCaption: { title: string; meta: string };
+  /** Set in the CMS; the API resolves imageId → image. Absent → grain placeholder. */
+  imageId?: string | null;
+  image?: MediaRef | null;
 }
 
 export interface StatementSection {
@@ -52,6 +55,8 @@ export interface RoomItem {
   linkText: string;
   imageTag: { title: string; meta: string };
   species: Species;
+  imageId?: string | null;
+  image?: MediaRef | null;
 }
 
 export interface RoomsSection {
@@ -70,6 +75,8 @@ export interface VideoSectionContent {
   videoUrl: string | null;
   captionTitle: string;
   captionMeta: string;
+  coverImageId?: string | null;
+  coverImage?: MediaRef | null;
 }
 
 export interface TestimonialSection {

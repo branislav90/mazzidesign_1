@@ -131,7 +131,15 @@ function SectionEditor({
       <def.Form
         value={value}
         onChange={(next) => {
-          setDraft((d) => ({ ...d, [locale]: next }));
+          setDraft((d) => {
+            const other = locale === "sl" ? "en" : "sl";
+            return {
+              ...d,
+              [locale]: next,
+              // images are locale-independent — keep both drafts in sync
+              [other]: def.mirrorShared ? def.mirrorShared(next, d[other]) : d[other],
+            };
+          });
           setSaved(false);
         }}
       />

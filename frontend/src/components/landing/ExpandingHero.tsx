@@ -7,12 +7,15 @@
 // prefers-reduced-motion.
 
 import { useEffect, useRef, useState } from "react";
+import type { MediaRef } from "@/lib/api/content";
 import WoodGrain from "./WoodGrain";
 
 export default function ExpandingHero({
   caption,
+  image,
 }: {
   caption: { title: string; meta: string };
+  image?: MediaRef | null;
 }) {
   const zoneRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -65,12 +68,21 @@ export default function ExpandingHero({
           ref={panelRef}
           className="relative h-[84vh] w-full scale-[.62] overflow-hidden rounded-[28px] will-change-[transform,border-radius] max-[900px]:h-[54vh] max-[900px]:scale-100 max-[900px]:rounded-[20px] motion-reduce:scale-100 motion-reduce:rounded-[28px]"
         >
-          <WoodGrain
-            pattern="g1"
-            grain="w1"
-            viewBox="0 0 1400 800"
-            className="absolute inset-[-8%] h-[116%] w-[116%]"
-          />
+          {image ? (
+            // eslint-disable-next-line @next/next/no-img-element -- remote CMS host, dimensions fluid
+            <img
+              src={image.url}
+              alt={image.alt}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          ) : (
+            <WoodGrain
+              pattern="g1"
+              grain="w1"
+              viewBox="0 0 1400 800"
+              className="absolute inset-[-8%] h-[116%] w-[116%]"
+            />
+          )}
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,#1A140EBF)]"

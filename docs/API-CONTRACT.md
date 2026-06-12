@@ -28,12 +28,19 @@ Uploaded files are stored under `/backend/storage` and served by the API at
 
 Section keys and their exact per-locale JSON shapes (these mirror `design/hrast.html`):
 
-- `hero`: `{ label: string, titleLines: { text: string, em?: string }[], sub: string, imageCaption: { title: string, meta: string } }`
+- `hero`: `{ label: string, titleLines: { text: string, em?: string }[], sub: string, imageCaption: { title: string, meta: string }, imageId?: string | null }`
   (`em` is a substring of `text` rendered as italic sand-colored serif)
 - `statement`: `{ label: string, text: string, em?: string }`
-- `rooms`: `{ items: { numeral: string, title: string, text: string, linkText: string, imageTag: { title: string, meta: string }, species: Species }[] }`
+- `rooms`: `{ items: { numeral: string, title: string, text: string, linkText: string, imageTag: { title: string, meta: string }, species: Species, imageId?: string | null }[] }`
 - `gallery`: `{ label: string, title: string }`  (section heading only; cards come from projects)
-- `videoSection`: `{ label: string, title: string, youtubeId: string | null, videoUrl: string | null, captionTitle: string, captionMeta: string }`
+- `videoSection`: `{ label: string, title: string, youtubeId: string | null, videoUrl: string | null, captionTitle: string, captionMeta: string, coverImageId?: string | null }`
+
+**Section images:** `imageId` / `coverImageId` hold a MediaAsset GUID set from the
+admin's media picker (the value is locale-independent — the admin mirrors it into
+both locale JSONs). The public `GET /content/page` resolves each id and embeds a
+`MediaRef` next to it (`hero.image`, `rooms.items[].image`, `videoSection.coverImage`).
+When the id is null/absent or the asset was deleted, no ref is embedded and the
+frontend falls back to the procedural wood-grain placeholder.
 - `testimonial`: `{ quote: string, who: string }`
 - `stats`: `{ items: { value: number, suffix?: string, label: string }[] }`
 - `contact`: `{ label: string, title: string, em?: string, text: string, ctaText: string, altText: string, email: string, phone: string, phoneDisplay: string, address: string }`

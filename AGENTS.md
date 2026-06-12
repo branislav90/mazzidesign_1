@@ -185,15 +185,21 @@ On submit the API: persists, stores snapshot + photos as MediaAssets, emails the
 
 ## 10. Milestones (work in this order, stop after each for review)
 
-1. **Scaffold** — monorepo, Next app + Tailwind tokens from `design/hrast.html`, .NET solution + EF Core + docker-compose MSSQL, Identity + JWT auth skeleton, Swagger, CI-ready scripts.
-2. **CMS backend** — entities, migrations, seed content + sample projects, public content/projects endpoints, admin CRUD endpoints, media upload pipeline, revalidation webhook.
-3. **Landing port (CMS-driven)** — pixel-faithful port of the prototype consuming `GET /content/page` + `GET /projects`; gallery, lightbox, video, socials all CMS-fed; CTAs → `/configure`.
-4. **Admin UI** — login, dashboard, projects editor, page-content forms, media library.
-5. **Configurator: catalog + store + wizard shell** — steps 1–2, no 3D yet.
-6. **3D core** — Canvas, materials, generators for kitchen straight + L, wardrobe, table; live dimensions step.
-7. **Remaining generators + material/extras** — bed, stairs, pergola, simple-box items, trim-profile mode.
-8. **Enquiry flow** — review/snapshot/upload, `POST /enquiries`, email, success page; admin enquiries view with status + notes.
-9. **Polish** — Slovenian content pass, a11y, tests, Lighthouse, README.
+> **Status (2026-06-12): milestones 1–8 are DONE and verified** (see README.md
+> for the detailed done/remaining lists and docs/API-CONTRACT.md for the implemented
+> API surface, including section images: hero.imageId / rooms.items[].imageId /
+> videoSection.coverImageId picked from the media library in the admin).
+> Only milestone 9 (polish) remains.
+
+1. ✅ **Scaffold** — monorepo, Next app + Tailwind tokens from `design/hrast.html`, .NET solution + EF Core + docker-compose MSSQL, Identity + JWT auth skeleton, Swagger, CI-ready scripts.
+2. ✅ **CMS backend** — entities, migrations, seed content + sample projects, public content/projects endpoints, admin CRUD endpoints, media upload pipeline, revalidation webhook.
+3. ✅ **Landing port (CMS-driven)** — pixel-faithful port of the prototype consuming `GET /content/page` + `GET /projects`; gallery, lightbox, video, socials all CMS-fed; CTAs → `/configure`.
+4. ✅ **Admin UI** — login, dashboard, projects editor, page-content forms, media library.
+5. ✅ **Configurator: catalog + store + wizard shell** — steps 1–2, no 3D yet.
+6. ✅ **3D core** — Canvas, materials, generators for kitchen straight + L, wardrobe, table; live dimensions step.
+7. ✅ **Remaining generators + material/extras** — bed, stairs, pergola, simple-box items, trim-profile mode.
+8. ✅ **Enquiry flow** — review/snapshot/upload, `POST /enquiries`, email, success page; admin enquiries view with status + notes.
+9. ⬜ **Polish** — Slovenian content pass, a11y, tests, Lighthouse, README.
 
 ## 11. Things NOT to do
 
