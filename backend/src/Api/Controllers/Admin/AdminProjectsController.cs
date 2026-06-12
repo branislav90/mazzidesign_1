@@ -194,14 +194,18 @@ public class AdminProjectsController : ControllerBase
             }
 
             _db.MediaAssets.Add(asset);
-            project.Images.Add(new ProjectImage
+            // Add via the context, not just the navigation: a graph-discovered entity
+            // with a pre-set Guid key would be tracked as Modified (UPDATE → 0 rows
+            // → DbUpdateConcurrencyException) instead of Added.
+            var image = new ProjectImage
             {
                 Id = Guid.NewGuid(),
                 ProjectId = project.Id,
                 MediaAssetId = asset.Id,
                 MediaAsset = asset,
                 SortOrder = nextOrder++,
-            });
+            };
+            _db.ProjectImages.Add(image); // fixup also appends it to project.Images
         }
 
         await _db.SaveChangesAsync(ct);
