@@ -352,10 +352,11 @@ interface VideoJson {
   captionTitle: string;
   captionMeta: string;
   coverImageId?: string | null;
+  instagramPosts?: string[];
 }
 
 const videoDef: SectionDef<VideoJson> = {
-  title: "Video predstavitev",
+  title: "Video / Instagram",
   defaults: {
     label: "",
     title: "",
@@ -364,6 +365,7 @@ const videoDef: SectionDef<VideoJson> = {
     captionTitle: "",
     captionMeta: "",
     coverImageId: null,
+    instagramPosts: [],
   },
   schema: z.object({
     label: str,
@@ -373,15 +375,20 @@ const videoDef: SectionDef<VideoJson> = {
     captionTitle: str,
     captionMeta: str,
     coverImageId: optionalImageId,
+    instagramPosts: z.array(urlOrEmpty).optional(),
   }),
   serialize: (v) => ({
     ...v,
     youtubeId: v.youtubeId?.trim() ? v.youtubeId.trim() : null,
     videoUrl: v.videoUrl?.trim() ? v.videoUrl.trim() : null,
+    instagramPosts: (v.instagramPosts ?? [])
+      .map((u) => u.trim())
+      .filter((u) => u.length > 0),
   }),
   mirrorShared: (changed, other) => ({
     ...other,
     coverImageId: changed.coverImageId ?? null,
+    instagramPosts: changed.instagramPosts ?? [],
   }),
   Form: ({ value, onChange }) => (
     <div className="space-y-4">
@@ -422,6 +429,22 @@ const videoDef: SectionDef<VideoJson> = {
         value={value.coverImageId}
         onChange={(coverImageId) => onChange({ ...value, coverImageId })}
       />
+      <Repeater
+        label="Instagram objave (do 5 — najnovejše)"
+        items={value.instagramPosts ?? []}
+        onChange={(instagramPosts) => onChange({ ...value, instagramPosts })}
+        makeNew={() => ""}
+        renderItem={(url, update) => (
+          <TextField
+            label="Povezava do objave (npr. https://www.instagram.com/reel/…/ ali /p/…/)"
+            value={url}
+            onChange={update}
+          />
+        )}
+      />
+      <p className="text-xs text-neutral-500">
+        Če je seznam prazen, razdelek prikaže posamičen video (YouTube / URL).
+      </p>
     </div>
   ),
 };

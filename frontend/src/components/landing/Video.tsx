@@ -1,11 +1,10 @@
 "use client";
 
-// Video showcase from hrast (.video-sec): rounded frame with a procedural grain
-// cover at brightness(.55), radial vignette, and a 96px frosted-glass play
-// circle (hover: scale 1.12 + sand fill). Activating plays the CMS-configured
-// film: youtubeId → youtube-nocookie iframe, an Instagram reel/post URL →
-// Instagram embed (portrait frame), any other videoUrl → native <video>,
-// nothing set → a 4s "coming soon" note.
+// Film section. When the CMS provides `instagramPosts`, the section renders a
+// grid of the latest Instagram posts (official embeds). Otherwise it falls back
+// to the single-film behaviour: youtubeId → youtube-nocookie iframe, an
+// Instagram URL in videoUrl → one embed, any other videoUrl → native <video>,
+// nothing → a 4s "coming soon" note. Keeps the hrast frosted play-button look.
 
 import { useEffect, useRef, useState } from "react";
 import type { VideoSectionContent } from "@/lib/api/content";
@@ -16,15 +15,74 @@ import WoodGrain from "./WoodGrain";
 type Mode = "cover" | "youtube" | "video" | "instagram";
 
 /** Builds the Instagram embed URL for a reel/post/tv link, else null. */
-function instagramEmbedUrl(url: string | null): string | null {
-  if (!url) return null;
+function instagramEmbedUrl(url: string): string | null {
   const m = url.match(/instagram\.com\/(reel|reels|p|tv)\/([A-Za-z0-9_-]+)/);
   if (!m) return null;
   const type = m[1] === "reels" ? "reel" : m[1];
   return `https://www.instagram.com/${type}/${m[2]}/embed`;
 }
 
+function SectionHead({ section }: { section: VideoSectionContent }) {
+  return (
+    <Reveal className="wrap mb-[56px] text-center">
+      <span className="caps">{section.label}</span>
+      <h2 className="mt-[22px] font-serif text-[clamp(34px,4.4vw,62px)] font-normal leading-[1.08]">
+        {section.title}
+      </h2>
+    </Reveal>
+  );
+}
+
 export default function Video({
+  section,
+  t,
+}: {
+  section: VideoSectionContent;
+  t: VideoDict;
+}) {
+  const posts = (section.instagramPosts ?? [])
+    .map(instagramEmbedUrl)
+    .filter((u): u is string => u !== null)
+    .slice(0, 5);
+
+  // --- Instagram feed grid -------------------------------------------------
+  if (posts.length > 0) {
+    return (
+      <section
+        id="film"
+        className="border-t border-line py-[clamp(100px,12vw,170px)]"
+      >
+        <SectionHead section={section} />
+        <div className="wrap">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+            {posts.map((src, i) => (
+              <Reveal
+                key={src}
+                className="relative aspect-[9/16] overflow-hidden rounded-[18px] border border-line bg-white"
+                style={{ transitionDelay: `${i * 80}ms` }}
+              >
+                <iframe
+                  src={src}
+                  title={`Instagram ${i + 1}`}
+                  loading="lazy"
+                  scrolling="no"
+                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                  allowFullScreen
+                  className="absolute inset-0 h-full w-full border-0"
+                />
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // --- Single-film fallback ------------------------------------------------
+  return <SingleFilm section={section} t={t} />;
+}
+
+function SingleFilm({
   section,
   t,
 }: {
@@ -42,8 +100,7 @@ export default function Video({
     [],
   );
 
-  const igEmbed = instagramEmbedUrl(section.videoUrl);
-  // Instagram reels are vertical — present the whole section in a portrait frame.
+  const igEmbed = section.videoUrl ? instagramEmbedUrl(section.videoUrl) : null;
   const portrait = !section.youtubeId && !!igEmbed;
 
   const play = () => {
@@ -65,12 +122,7 @@ export default function Video({
       id="film"
       className="border-t border-line py-[clamp(100px,12vw,170px)]"
     >
-      <Reveal className="wrap mb-[56px] text-center">
-        <span className="caps">{section.label}</span>
-        <h2 className="mt-[22px] font-serif text-[clamp(34px,4.4vw,62px)] font-normal leading-[1.08]">
-          {section.title}
-        </h2>
-      </Reveal>
+      <SectionHead section={section} />
       <div className="wrap">
         <Reveal
           className={`relative overflow-hidden rounded-[24px] bg-[#1A140E] ${

@@ -9,9 +9,11 @@ import { useEffect, useRef } from "react";
 export default function Reveal({
   className,
   children,
+  style,
 }: {
   className?: string;
   children: React.ReactNode;
+  style?: React.CSSProperties;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -33,7 +35,7 @@ export default function Reveal({
   }, []);
 
   return (
-    <div ref={ref} className={`rv ${className ?? ""}`}>
+    <div ref={ref} className={`rv ${className ?? ""}`} style={style}>
       {children}
     </div>
   );

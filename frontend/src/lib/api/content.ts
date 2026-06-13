@@ -80,6 +80,8 @@ export interface VideoSectionContent {
   captionMeta: string;
   coverImageId?: string | null;
   coverImage?: MediaRef | null;
+  /** When set, the section renders a grid of these Instagram posts (latest first). */
+  instagramPosts?: string[];
 }
 
 export interface TestimonialSection {
@@ -223,12 +225,13 @@ export const DEFAULT_CONTENT: Record<Locale, PageContent> = {
     },
     gallery: { label: "Izbrana dela", title: "Iz galerije" },
     videoSection: {
-      label: "Delavnica v gibanju",
-      title: "Poglejte, kako nastane prostor",
+      label: "Sledite nam na Instagramu",
+      title: "Iz delavnice",
       youtubeId: null,
-      videoUrl: "https://www.instagram.com/reel/DY5JfOEAXU3/",
+      videoUrl: null,
       captionTitle: "Od surove deske do končane kuhinje",
       captionMeta: "Posnetek iz našega ateljeja",
+      instagramPosts: ["https://www.instagram.com/reel/DY5JfOEAXU3/"],
     },
     testimonial: {
       quote:
@@ -320,12 +323,13 @@ export const DEFAULT_CONTENT: Record<Locale, PageContent> = {
     },
     gallery: { label: "Selected works", title: "From the gallery" },
     videoSection: {
-      label: "The workshop, in motion",
-      title: "Watch a room take shape",
+      label: "Follow us on Instagram",
+      title: "From the workshop",
       youtubeId: null,
-      videoUrl: "https://www.instagram.com/reel/DY5JfOEAXU3/",
+      videoUrl: null,
       captionTitle: "From rough board to finished kitchen",
       captionMeta: "A clip from our atelier",
+      instagramPosts: ["https://www.instagram.com/reel/DY5JfOEAXU3/"],
     },
     testimonial: {
       quote:
