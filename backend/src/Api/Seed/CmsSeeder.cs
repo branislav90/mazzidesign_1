@@ -202,24 +202,36 @@ public static class CmsSeeder
                 label = "Delavnica v gibanju",
                 title = "Iz delavnice",
                 youtubeId = (string?)null,
-                videoUrl = "/films/workshop.mp4",
+                videoUrl = (string?)null,
                 captionTitle = "Od surove deske do dokončane kuhinje",
                 captionMeta = "Posnetek iz našega ateljeja",
                 instagramPosts = Array.Empty<string>(),
                 videoPortrait = true,
                 videoPoster = "/films/workshop-poster.jpg",
+                films = new[]
+                {
+                    new { src = "/films/workshop.mp4", poster = "/films/workshop-poster.jpg" },
+                    new { src = "/films/film-2.mp4", poster = "/films/film-2-poster.jpg" },
+                    new { src = "/films/film-3.mp4", poster = "/films/film-3-poster.jpg" },
+                },
             },
             new
             {
                 label = "The workshop, in motion",
                 title = "From the workshop",
                 youtubeId = (string?)null,
-                videoUrl = "/films/workshop.mp4",
+                videoUrl = (string?)null,
                 captionTitle = "From rough board to finished kitchen",
                 captionMeta = "A clip from our atelier",
                 instagramPosts = Array.Empty<string>(),
                 videoPortrait = true,
                 videoPoster = "/films/workshop-poster.jpg",
+                films = new[]
+                {
+                    new { src = "/films/workshop.mp4", poster = "/films/workshop-poster.jpg" },
+                    new { src = "/films/film-2.mp4", poster = "/films/film-2-poster.jpg" },
+                    new { src = "/films/film-3.mp4", poster = "/films/film-3-poster.jpg" },
+                },
             });
 
         yield return ("testimonial",

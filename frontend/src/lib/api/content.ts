@@ -86,6 +86,8 @@ export interface VideoSectionContent {
   videoPortrait?: boolean;
   /** Poster shown on the cover before the self-hosted film plays. */
   videoPoster?: string | null;
+  /** Grid of self-hosted films (each a portrait card with poster → native video). */
+  films?: { src: string; poster?: string | null }[];
 }
 
 export interface TestimonialSection {
@@ -232,12 +234,17 @@ export const DEFAULT_CONTENT: Record<Locale, PageContent> = {
       label: "Delavnica v gibanju",
       title: "Iz delavnice",
       youtubeId: null,
-      videoUrl: "/films/workshop.mp4",
+      videoUrl: null,
       captionTitle: "Od surove deske do končane kuhinje",
       captionMeta: "Posnetek iz našega ateljeja",
       instagramPosts: [],
       videoPortrait: true,
       videoPoster: "/films/workshop-poster.jpg",
+      films: [
+        { src: "/films/workshop.mp4", poster: "/films/workshop-poster.jpg" },
+        { src: "/films/film-2.mp4", poster: "/films/film-2-poster.jpg" },
+        { src: "/films/film-3.mp4", poster: "/films/film-3-poster.jpg" },
+      ],
     },
     testimonial: {
       quote:
@@ -332,12 +339,17 @@ export const DEFAULT_CONTENT: Record<Locale, PageContent> = {
       label: "The workshop, in motion",
       title: "From the workshop",
       youtubeId: null,
-      videoUrl: "/films/workshop.mp4",
+      videoUrl: null,
       captionTitle: "From rough board to finished kitchen",
       captionMeta: "A clip from our atelier",
       instagramPosts: [],
       videoPortrait: true,
       videoPoster: "/films/workshop-poster.jpg",
+      films: [
+        { src: "/films/workshop.mp4", poster: "/films/workshop-poster.jpg" },
+        { src: "/films/film-2.mp4", poster: "/films/film-2-poster.jpg" },
+        { src: "/films/film-3.mp4", poster: "/films/film-3-poster.jpg" },
+      ],
     },
     testimonial: {
       quote:

@@ -355,6 +355,7 @@ interface VideoJson {
   instagramPosts?: string[];
   videoPortrait?: boolean;
   videoPoster?: string | null;
+  films?: { src: string; poster?: string | null }[];
 }
 
 const videoDef: SectionDef<VideoJson> = {
@@ -370,6 +371,7 @@ const videoDef: SectionDef<VideoJson> = {
     instagramPosts: [],
     videoPortrait: false,
     videoPoster: "",
+    films: [],
   },
   schema: z.object({
     label: str,
@@ -383,6 +385,9 @@ const videoDef: SectionDef<VideoJson> = {
     instagramPosts: z.array(urlOrEmpty).optional(),
     videoPortrait: z.boolean().optional(),
     videoPoster: str.optional(),
+    films: z
+      .array(z.object({ src: str, poster: str.nullable().optional() }))
+      .optional(),
   }),
   serialize: (v) => ({
     ...v,
@@ -399,6 +404,7 @@ const videoDef: SectionDef<VideoJson> = {
     instagramPosts: changed.instagramPosts ?? [],
     videoPortrait: changed.videoPortrait ?? false,
     videoPoster: changed.videoPoster ?? "",
+    films: changed.films ?? [],
   }),
   Form: ({ value, onChange }) => (
     <div className="space-y-4">
@@ -454,6 +460,26 @@ const videoDef: SectionDef<VideoJson> = {
         />
         Pokončni video (9:16)
       </label>
+      <Repeater
+        label="Filmi (gostujemo sami — mreža videov)"
+        items={value.films ?? []}
+        onChange={(films) => onChange({ ...value, films })}
+        makeNew={() => ({ src: "", poster: "" })}
+        renderItem={(film, update) => (
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <TextField
+              label="Pot do videa (npr. /films/clip.mp4)"
+              value={film.src}
+              onChange={(src) => update({ ...film, src })}
+            />
+            <TextField
+              label="Plakat (poster, neobvezno)"
+              value={film.poster ?? ""}
+              onChange={(poster) => update({ ...film, poster })}
+            />
+          </div>
+        )}
+      />
       <Repeater
         label="Instagram objave (do 5 — najnovejše)"
         items={value.instagramPosts ?? []}

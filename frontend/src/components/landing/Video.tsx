@@ -22,6 +22,71 @@ function instagramEmbedUrl(url: string): string | null {
   return `https://www.instagram.com/${type}/${m[2]}/embed`;
 }
 
+// One portrait film card: poster + frosted play button → native <video>.
+function FilmCard({
+  film,
+  playLabel,
+  index,
+}: {
+  film: { src: string; poster?: string | null };
+  playLabel: string;
+  index: number;
+}) {
+  const [playing, setPlaying] = useState(false);
+  return (
+    <Reveal
+      className="relative aspect-[9/16] w-[min(300px,80vw)] overflow-hidden rounded-[18px] border border-line bg-[#1A140E]"
+      style={{ transitionDelay: `${index * 80}ms` }}
+    >
+      {playing ? (
+        // eslint-disable-next-line jsx-a11y/media-has-caption
+        <video
+          src={film.src}
+          poster={film.poster ?? undefined}
+          controls
+          autoPlay
+          playsInline
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      ) : (
+        <button
+          type="button"
+          onClick={() => setPlaying(true)}
+          aria-label={playLabel}
+          className="group absolute inset-0 block cursor-pointer"
+        >
+          {film.poster ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={film.poster}
+              alt=""
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover brightness-[.6]"
+            />
+          ) : (
+            <WoodGrain
+              pattern="g2"
+              grain="w2"
+              viewBox="0 0 700 900"
+              className="absolute inset-[-8%] h-[116%] w-[116%] brightness-[.6]"
+            />
+          )}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,#1A140E99)]"
+          />
+          <span className="absolute left-1/2 top-1/2 z-[2] flex h-[68px] w-[68px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-[#F7F4EF66] bg-[#F7F4EF14] backdrop-blur-[6px] [transition:transform_.5s_var(--ease),background-color_.4s,border-color_.4s] group-hover:scale-[1.12] group-hover:border-sand group-hover:bg-sand">
+            <span
+              aria-hidden="true"
+              className="ml-[4px] block border-y-[10px] border-l-[16px] border-r-0 border-solid border-y-transparent border-l-[#F7F4EF]"
+            />
+          </span>
+        </button>
+      )}
+    </Reveal>
+  );
+}
+
 function SectionHead({ section }: { section: VideoSectionContent }) {
   return (
     <Reveal className="wrap mb-[56px] text-center">
@@ -40,6 +105,27 @@ export default function Video({
   section: VideoSectionContent;
   t: VideoDict;
 }) {
+  const films = (section.films ?? []).filter((f) => f.src);
+
+  // --- Self-hosted film grid -----------------------------------------------
+  if (films.length > 0) {
+    return (
+      <section
+        id="film"
+        className="border-t border-line py-[clamp(100px,12vw,170px)]"
+      >
+        <SectionHead section={section} />
+        <div className="wrap">
+          <div className="flex flex-wrap justify-center gap-5">
+            {films.map((f, i) => (
+              <FilmCard key={f.src} film={f} playLabel={t.play} index={i} />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   const posts = (section.instagramPosts ?? [])
     .map(instagramEmbedUrl)
     .filter((u): u is string => u !== null)
