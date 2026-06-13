@@ -15,6 +15,12 @@ export function getLocale(): Locale {
   return value === "en" ? "en" : "sl";
 }
 
+/** Reads the "design" cookie ('stack' default | 'classic'). Server-only. */
+export function getDesign(): "stack" | "classic" {
+  const value = cookies().get("design")?.value;
+  return value === "classic" ? "classic" : "stack";
+}
+
 export interface NavDict {
   rooms: string;
   gallery: string;
@@ -44,6 +50,7 @@ export interface UiDict {
   rooms: { label: string; title: string };
   gallery: GalleryDict;
   video: VideoDict;
+  design: { label: string; classic: string; stack: string; aria: string };
 }
 
 export const UI: Record<Locale, UiDict> = {
@@ -93,6 +100,12 @@ export const UI: Record<Locale, UiDict> = {
       play: "Predvajaj film",
       noFilm: "Film bo kmalu na voljo.",
     },
+    design: {
+      label: "Videz",
+      classic: "Klasično",
+      stack: "Sodobno",
+      aria: "Izbira videza strani",
+    },
   },
   en: {
     nav: {
@@ -139,6 +152,12 @@ export const UI: Record<Locale, UiDict> = {
     video: {
       play: "Play film",
       noFilm: "The film is coming soon.",
+    },
+    design: {
+      label: "Look",
+      classic: "Classic",
+      stack: "Modern",
+      aria: "Choose page look",
     },
   },
 };
