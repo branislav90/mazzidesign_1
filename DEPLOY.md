@@ -57,6 +57,8 @@ Then:
 
 The API auto-applies migrations and seeds the landing content, 6 sample projects, and the admin user on first boot. Uploaded media and the database persist in named volumes.
 
+> **Cheaper still:** the app uses **PostgreSQL**, so for production you can drop the bundled `postgres` container and point the API at a free/low-cost managed database (Neon, Supabase, Railway, or Render Postgres all have free tiers). Just set `ConnectionStrings__Default` to its connection string (`Host=…;Port=5432;Database=…;Username=…;Password=…;SSL Mode=Require;Trust Server Certificate=true`) and remove the `postgres` service + `depends_on`.
+
 **On a public VM**, set in `.env.prod`:
 
 ```

@@ -10,8 +10,8 @@ using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace Api.Controllers;
 
@@ -217,8 +217,9 @@ public class EnquiriesController : ControllerBase
         return ReferenceGenerator.Format(year, ReferenceGenerator.NextSequence(last, year));
     }
 
+    // PostgreSQL unique_violation — SQLSTATE 23505.
     private static bool IsUniqueViolation(DbUpdateException ex) =>
-        ex.InnerException is SqlException { Number: 2601 or 2627 };
+        ex.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation };
 
     private static (byte[] Bytes, string ContentType)? TryDecodeDataUrl(string dataUrl)
     {

@@ -10,24 +10,20 @@
 #       admin → http://<host>:3000/admin · outgoing mail → http://<host>:5025
 
 services:
-  mssql:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+  postgres:
+    image: postgres:16-alpine
     environment:
-      ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD}"
-      MSSQL_PID: Developer
+      POSTGRES_DB: woodwork
+      POSTGRES_USER: woodwork
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
     volumes:
-      - mssql-data:/var/opt/mssql
+      - pg-data:/var/lib/postgresql/data
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$${MSSQL_SA_PASSWORD}\" -Q 'SELECT 1' || exit 1",
-        ]
+      test: ["CMD-SHELL", "pg_isready -U woodwork -d woodwork"]
       interval: 10s
       timeout: 5s
       retries: 15
-      start_period: 30s
+      start_period: 20s
 
   # Local SMTP sink — view the workshop's enquiry emails at http://<host>:5025
   smtp4dev:
@@ -43,7 +39,7 @@ services:
       # and exposes Swagger — exactly what a demo wants.
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:5080
-      ConnectionStrings__Default: "Server=mssql,1433;Database=woodwork;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__Default: "Host=postgres;Port=5432;Database=woodwork;Username=woodwork;Password=${POSTGRES_PASSWORD}"
       Jwt__Secret: "${JWT_SECRET}"
       Admin__Email: "${ADMIN_EMAIL}"
       Admin__Password: "${ADMIN_PASSWORD}"
@@ -58,7 +54,7 @@ services:
     volumes:
       - storage:/app/storage
     depends_on:
-      mssql:
+      postgres:
         condition: service_healthy
     ports:
       - "5080:5080"
@@ -80,5 +76,5 @@ services:
       - "3000:3000"
 
 volumes:
-  mssql-data:
+  pg-data:
   storage:

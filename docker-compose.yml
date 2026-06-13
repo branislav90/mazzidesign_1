@@ -1,24 +1,20 @@
 services:
-  mssql:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+  postgres:
+    image: postgres:16-alpine
     environment:
-      ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:-Woodwork!Dev2026}"
-      MSSQL_PID: Developer
+      POSTGRES_DB: woodwork
+      POSTGRES_USER: woodwork
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-Woodwork!Dev2026}"
     ports:
-      - "14333:1433"
+      - "5432:5432"
     volumes:
-      - mssql-data:/var/opt/mssql
+      - pg-data:/var/lib/postgresql/data
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$${MSSQL_SA_PASSWORD}\" -Q 'SELECT 1' || exit 1",
-        ]
+      test: ["CMD-SHELL", "pg_isready -U woodwork -d woodwork"]
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 20s
+      start_period: 10s
 
   # Local SMTP sink — view outgoing workshop emails at http://localhost:5025
   smtp4dev:
@@ -28,4 +24,4 @@ services:
       - "2525:25"
 
 volumes:
-  mssql-data:
+  pg-data:

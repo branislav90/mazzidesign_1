@@ -3,7 +3,7 @@
 Monorepo for a custom woodworking company platform:
 
 - **`/frontend`** — Next.js 14 (App Router, TypeScript, Tailwind). Landing site (port of `design/hrast.html`), enquiry configurator with live 3D preview (`/configure`), admin area (`/admin`).
-- **`/backend`** — .NET 8 ASP.NET Core Web API. Custom CMS (projects, page content, media, enquiries), Identity + JWT auth, EF Core + SQL Server.
+- **`/backend`** — .NET 8 ASP.NET Core Web API. Custom CMS (projects, page content, media, enquiries), Identity + JWT auth, EF Core + PostgreSQL.
 - **`/design`** — client-approved prototype (`hrast.html`), reference only.
 
 Full build brief: [`AGENTS.md`](AGENTS.md).
@@ -15,7 +15,7 @@ Full build brief: [`AGENTS.md`](AGENTS.md).
 ## Run locally
 
 ```bash
-# 1. Database (MSSQL on port 14333) + smtp4dev (UI on http://localhost:5025)
+# 1. Database (PostgreSQL on port 5432) + smtp4dev (UI on http://localhost:5025)
 docker compose up -d
 
 # 2. API — http://localhost:5080 (Swagger at /swagger, applies EF migrations + seeds admin in dev)
@@ -39,7 +39,7 @@ Dev admin login (seeded automatically): `admin@woodwork.local` / `Admin!Dev2026`
 
 ## Status — done
 
-- [x] **M1 — Scaffold**: monorepo, Next 14 + Tailwind tokens from `design/hrast.html`, .NET 8 solution (Api/Domain/Infrastructure + tests), EF Core + initial Identity migration, JWT auth (login / refresh rotation / logout), Serilog, Swagger, docker-compose MSSQL + smtp4dev
+- [x] **M1 — Scaffold**: monorepo, Next 14 + Tailwind tokens from `design/hrast.html`, .NET 8 solution (Api/Domain/Infrastructure + tests), EF Core + PostgreSQL, JWT auth (login / refresh rotation / logout), Serilog, Swagger, docker-compose Postgres + smtp4dev
 - [x] **M2 — CMS backend**: Project/PageSection/MediaAsset/Enquiry entities, `CmsCore` migration, seed (full landing copy sl+en, 6 sample projects), public + admin endpoints, ImageSharp media pipeline (webp thumb/medium/large), MailKit enquiry email, rate limiting (5/min/IP), revalidation webhook
 - [x] **M3 — Landing port**: pixel-faithful hrast port, fully CMS-driven with built-in fallback, gallery category filter + keyboard lightbox, all CTAs → `/configure`, SL/EN toggle, reduced-motion support
 - [x] **M4 — Admin UI**: JWT in httpOnly cookies via Next proxy (refresh-and-retry), dashboard, projects editor (sl/en side-by-side, image upload/reorder/cover, draft/publish), typed page-content forms, media library, enquiries with status + internal notes

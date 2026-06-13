@@ -37,7 +37,7 @@ Customer-facing language is **Slovenian first, English second** (content is stor
 
 **Backend** — `/backend`
 - **.NET 8 ASP.NET Core Web API** (single project or thin vertical slices — no microservices)
-- **EF Core 8 + SQL Server (MSSQL)** — migrations checked in; `docker-compose.yml` provides `mcr.microsoft.com/mssql/server:2022-latest` for local dev
+- **EF Core 8 + PostgreSQL** — switched from MSSQL to Postgres at the client's request (lighter, much cheaper to host); migrations checked in; `docker-compose.yml` provides `postgres:16-alpine` for local dev
 - **ASP.NET Core Identity + JWT** (access + refresh) for admin auth — admin users seeded via migration/env, no public registration
 - **FluentValidation** on all write endpoints; ProblemDetails for errors
 - File storage: local disk under `/backend/storage` behind an `IFileStorage` abstraction (so Azure Blob can replace it later); images re-encoded and resized on upload (thumb/medium/large) with ImageSharp
