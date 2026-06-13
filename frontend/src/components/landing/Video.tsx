@@ -101,7 +101,7 @@ function SingleFilm({
   );
 
   const igEmbed = section.videoUrl ? instagramEmbedUrl(section.videoUrl) : null;
-  const portrait = !section.youtubeId && !!igEmbed;
+  const portrait = !section.youtubeId && (!!igEmbed || !!section.videoPortrait);
 
   const play = () => {
     if (section.youtubeId) {
@@ -138,11 +138,11 @@ function SingleFilm({
               aria-label={t.play}
               className="group absolute inset-0 block cursor-pointer text-left"
             >
-              {section.coverImage ? (
-                // eslint-disable-next-line @next/next/no-img-element -- remote CMS host, dimensions fluid
+              {section.videoPoster || section.coverImage ? (
+                // eslint-disable-next-line @next/next/no-img-element -- remote/CMS host, dimensions fluid
                 <img
-                  src={section.coverImage.url}
-                  alt={section.coverImage.alt}
+                  src={section.videoPoster || section.coverImage!.url}
+                  alt={section.coverImage?.alt ?? section.captionTitle}
                   loading="lazy"
                   className="absolute inset-0 h-full w-full object-cover brightness-[.55]"
                 />
@@ -200,10 +200,11 @@ function SingleFilm({
             // eslint-disable-next-line jsx-a11y/media-has-caption
             <video
               src={section.videoUrl}
+              poster={section.videoPoster ?? undefined}
               controls
               autoPlay
               playsInline
-              className="absolute inset-0 h-full w-full"
+              className="absolute inset-0 h-full w-full object-cover"
             />
           )}
 

@@ -199,23 +199,27 @@ public static class CmsSeeder
         yield return ("videoSection",
             new
             {
-                label = "Sledite nam na Instagramu",
+                label = "Delavnica v gibanju",
                 title = "Iz delavnice",
                 youtubeId = (string?)null,
-                videoUrl = (string?)null,
+                videoUrl = "/films/workshop.mp4",
                 captionTitle = "Od surove deske do dokončane kuhinje",
                 captionMeta = "Posnetek iz našega ateljeja",
-                instagramPosts = new[] { "https://www.instagram.com/reel/DY5JfOEAXU3/" },
+                instagramPosts = Array.Empty<string>(),
+                videoPortrait = true,
+                videoPoster = "/films/workshop-poster.jpg",
             },
             new
             {
-                label = "Follow us on Instagram",
+                label = "The workshop, in motion",
                 title = "From the workshop",
                 youtubeId = (string?)null,
-                videoUrl = (string?)null,
+                videoUrl = "/films/workshop.mp4",
                 captionTitle = "From rough board to finished kitchen",
                 captionMeta = "A clip from our atelier",
-                instagramPosts = new[] { "https://www.instagram.com/reel/DY5JfOEAXU3/" },
+                instagramPosts = Array.Empty<string>(),
+                videoPortrait = true,
+                videoPoster = "/films/workshop-poster.jpg",
             });
 
         yield return ("testimonial",

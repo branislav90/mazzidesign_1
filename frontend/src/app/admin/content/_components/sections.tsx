@@ -353,6 +353,8 @@ interface VideoJson {
   captionMeta: string;
   coverImageId?: string | null;
   instagramPosts?: string[];
+  videoPortrait?: boolean;
+  videoPoster?: string | null;
 }
 
 const videoDef: SectionDef<VideoJson> = {
@@ -366,21 +368,27 @@ const videoDef: SectionDef<VideoJson> = {
     captionMeta: "",
     coverImageId: null,
     instagramPosts: [],
+    videoPortrait: false,
+    videoPoster: "",
   },
   schema: z.object({
     label: str,
     title: str,
     youtubeId: str.nullable(),
-    videoUrl: urlOrEmpty.nullable(),
+    // Accepts an absolute URL or a site-relative path (e.g. /films/clip.mp4).
+    videoUrl: str.nullable(),
     captionTitle: str,
     captionMeta: str,
     coverImageId: optionalImageId,
     instagramPosts: z.array(urlOrEmpty).optional(),
+    videoPortrait: z.boolean().optional(),
+    videoPoster: str.optional(),
   }),
   serialize: (v) => ({
     ...v,
     youtubeId: v.youtubeId?.trim() ? v.youtubeId.trim() : null,
     videoUrl: v.videoUrl?.trim() ? v.videoUrl.trim() : null,
+    videoPoster: v.videoPoster?.trim() ? v.videoPoster.trim() : "",
     instagramPosts: (v.instagramPosts ?? [])
       .map((u) => u.trim())
       .filter((u) => u.length > 0),
@@ -389,6 +397,8 @@ const videoDef: SectionDef<VideoJson> = {
     ...other,
     coverImageId: changed.coverImageId ?? null,
     instagramPosts: changed.instagramPosts ?? [],
+    videoPortrait: changed.videoPortrait ?? false,
+    videoPoster: changed.videoPoster ?? "",
   }),
   Form: ({ value, onChange }) => (
     <div className="space-y-4">
@@ -409,9 +419,14 @@ const videoDef: SectionDef<VideoJson> = {
           onChange={(youtubeId) => onChange({ ...value, youtubeId })}
         />
         <TextField
-          label="URL videa (neobvezno)"
+          label="URL videa ali pot (npr. /films/clip.mp4)"
           value={value.videoUrl ?? ""}
           onChange={(videoUrl) => onChange({ ...value, videoUrl })}
+        />
+        <TextField
+          label="Slika plakata (poster, neobvezno)"
+          value={value.videoPoster ?? ""}
+          onChange={(videoPoster) => onChange({ ...value, videoPoster })}
         />
         <TextField
           label="Napis — naslov"
@@ -429,6 +444,16 @@ const videoDef: SectionDef<VideoJson> = {
         value={value.coverImageId}
         onChange={(coverImageId) => onChange({ ...value, coverImageId })}
       />
+      <label className="flex items-center gap-2 text-sm text-neutral-700">
+        <input
+          type="checkbox"
+          checked={value.videoPortrait ?? false}
+          onChange={(e) =>
+            onChange({ ...value, videoPortrait: e.target.checked })
+          }
+        />
+        Pokončni video (9:16)
+      </label>
       <Repeater
         label="Instagram objave (do 5 — najnovejše)"
         items={value.instagramPosts ?? []}

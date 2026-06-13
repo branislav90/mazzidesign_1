@@ -82,6 +82,10 @@ export interface VideoSectionContent {
   coverImage?: MediaRef | null;
   /** When set, the section renders a grid of these Instagram posts (latest first). */
   instagramPosts?: string[];
+  /** Self-hosted film: render the frame in 9:16 when the clip is vertical. */
+  videoPortrait?: boolean;
+  /** Poster shown on the cover before the self-hosted film plays. */
+  videoPoster?: string | null;
 }
 
 export interface TestimonialSection {
@@ -225,13 +229,15 @@ export const DEFAULT_CONTENT: Record<Locale, PageContent> = {
     },
     gallery: { label: "Izbrana dela", title: "Iz galerije" },
     videoSection: {
-      label: "Sledite nam na Instagramu",
+      label: "Delavnica v gibanju",
       title: "Iz delavnice",
       youtubeId: null,
-      videoUrl: null,
+      videoUrl: "/films/workshop.mp4",
       captionTitle: "Od surove deske do končane kuhinje",
       captionMeta: "Posnetek iz našega ateljeja",
-      instagramPosts: ["https://www.instagram.com/reel/DY5JfOEAXU3/"],
+      instagramPosts: [],
+      videoPortrait: true,
+      videoPoster: "/films/workshop-poster.jpg",
     },
     testimonial: {
       quote:
@@ -323,13 +329,15 @@ export const DEFAULT_CONTENT: Record<Locale, PageContent> = {
     },
     gallery: { label: "Selected works", title: "From the gallery" },
     videoSection: {
-      label: "Follow us on Instagram",
+      label: "The workshop, in motion",
       title: "From the workshop",
       youtubeId: null,
-      videoUrl: null,
+      videoUrl: "/films/workshop.mp4",
       captionTitle: "From rough board to finished kitchen",
       captionMeta: "A clip from our atelier",
-      instagramPosts: ["https://www.instagram.com/reel/DY5JfOEAXU3/"],
+      instagramPosts: [],
+      videoPortrait: true,
+      videoPoster: "/films/workshop-poster.jpg",
     },
     testimonial: {
       quote:
