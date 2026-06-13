@@ -18,6 +18,24 @@ export default function DesignSwitcher({
     { value: "classic", label: t.classic },
   ];
 
+  // The switch only restyles the Rooms + Gallery sections — if neither is on
+  // screen, glide to Rooms so the change is visible.
+  const pick = (value: Design) => {
+    if (value === design) return;
+    setDesign(value);
+    const inView = (id: string) => {
+      const el = document.getElementById(id);
+      if (!el) return false;
+      const r = el.getBoundingClientRect();
+      return r.top < window.innerHeight && r.bottom > 0;
+    };
+    if (!inView("rooms") && !inView("gallery")) {
+      document
+        .getElementById("rooms")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-5 z-[80] flex justify-center px-4 print:hidden">
       <div
@@ -30,7 +48,7 @@ export default function DesignSwitcher({
           <button
             key={o.value}
             type="button"
-            onClick={() => setDesign(o.value)}
+            onClick={() => pick(o.value)}
             aria-pressed={design === o.value}
             className={`rounded-full px-4 py-2 text-[11px] font-semibold uppercase tracking-caps transition-colors duration-300 ease-hrast ${
               design === o.value
