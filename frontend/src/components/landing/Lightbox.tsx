@@ -1,8 +1,8 @@
 "use client";
 
-// Fullscreen ink-tinted lightbox: large image (or grain placeholder),
-// title/meta, ←/→ keyboard + on-screen nav, Esc closes, focus-trapped,
-// body scroll locked.
+// Lightbox from design/hrast-stack.html: a centered figure with a large photo
+// area over a caption bar (title/meta · counter · ← → ✕). Ink-tinted blurred
+// backdrop, ←/→/Esc keyboard nav, focus trap, body scroll lock, click-to-close.
 
 import { useEffect, useRef } from "react";
 import type { ProjectDto } from "@/lib/api/content";
@@ -26,7 +26,6 @@ export default function Lightbox({
   const project = projects[index];
   const image = project.images[0] ?? project.coverImage ?? null;
 
-  // focus + body scroll lock
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
     ref.current?.focus();
@@ -49,10 +48,7 @@ export default function Lightbox({
       e.preventDefault();
       onNav(-1);
     } else if (e.key === "Tab") {
-      // minimal focus trap
-      const focusables = ref.current?.querySelectorAll<HTMLElement>(
-        "button, a[href]",
-      );
+      const focusables = ref.current?.querySelectorAll<HTMLElement>("button");
       if (!focusables || focusables.length === 0) return;
       const first = focusables[0];
       const last = focusables[focusables.length - 1];
@@ -68,7 +64,7 @@ export default function Lightbox({
   };
 
   const navBtn =
-    "flex h-[52px] w-[52px] items-center justify-center rounded-full border border-[#F7F4EF40] text-[17px] text-[#F7F4EF] [transition:background-color_.4s,color_.4s,border-color_.4s] hover:border-[#F7F4EF] hover:bg-[#F7F4EF] hover:text-ink";
+    "flex h-[46px] w-[46px] items-center justify-center rounded-full border border-[#F7F4EF33] bg-transparent text-[18px] text-[#F7F4EF] [transition:background-color_.3s,border-color_.3s,color_.3s] hover:border-sand hover:bg-sand hover:text-ink";
 
   return (
     <div
@@ -81,63 +77,66 @@ export default function Lightbox({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#1A140EF2] p-6 outline-none"
+      className="fixed inset-0 z-[300] flex items-center justify-center bg-[#1A140EF2] p-[clamp(16px,4vw,60px)] outline-none backdrop-blur-[10px]"
     >
-      <button
-        type="button"
-        onClick={onClose}
-        aria-label={t.lightbox.close}
-        className="absolute right-6 top-6 flex h-12 w-12 items-center justify-center rounded-full border border-[#F7F4EF40] text-[15px] text-[#F7F4EF] [transition:background-color_.4s,color_.4s,border-color_.4s] hover:border-[#F7F4EF] hover:bg-[#F7F4EF] hover:text-ink"
-      >
-        ✕
-      </button>
-
-      <figure className="flex w-full max-w-[1100px] flex-col items-center">
-        <div className="relative h-[min(68vh,720px)] w-full overflow-hidden rounded-[20px]">
+      <figure className="w-full max-w-[1040px] overflow-hidden rounded-[18px] border border-[#F7F4EF26] bg-ink">
+        <div className="relative h-[clamp(300px,64vh,660px)] overflow-hidden">
           {image ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={image.url || image.mediumUrl}
               alt={image.alt || project.title}
-              className="h-full w-full object-contain"
+              className="absolute inset-0 h-full w-full object-cover"
             />
           ) : (
             <WoodGrain
               pattern={patternForSpecies(project.species)}
               grain={grainForIndex(index)}
-              viewBox="0 0 1400 800"
+              viewBox="0 0 1000 700"
               className="absolute inset-[-8%] h-[116%] w-[116%]"
             />
           )}
         </div>
-        <figcaption className="mt-6 text-center">
-          <span className="block font-serif text-[clamp(20px,2.4vw,28px)] leading-[1.08] text-[#F7F4EF]">
-            {project.title}
+        <figcaption className="flex items-center justify-between gap-[14px] px-6 py-[18px] text-[#F7F4EF]">
+          <span>
+            <span className="block font-serif text-[21px] leading-[1.08]">
+              {project.title}
+            </span>
+            <span className="caps mt-[3px] block text-[#A89A8C]">
+              {t.species[project.species]} · {project.town} · {project.year}
+            </span>
           </span>
-          <span className="caps mt-2 block text-[#D8CDBC]">
-            {t.species[project.species]} · {project.town} · {project.year}
+          <span className="font-sans text-[13px] tracking-[.1em] text-[#A89A8C]">
+            {index + 1} / {projects.length}
+          </span>
+          <span className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => onNav(-1)}
+              aria-label={t.lightbox.prev}
+              className={navBtn}
+            >
+              ←
+            </button>
+            <button
+              type="button"
+              onClick={() => onNav(1)}
+              aria-label={t.lightbox.next}
+              className={navBtn}
+            >
+              →
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label={t.lightbox.close}
+              className={navBtn}
+            >
+              ✕
+            </button>
           </span>
         </figcaption>
       </figure>
-
-      <div className="mt-8 flex gap-3">
-        <button
-          type="button"
-          onClick={() => onNav(-1)}
-          aria-label={t.lightbox.prev}
-          className={navBtn}
-        >
-          ←
-        </button>
-        <button
-          type="button"
-          onClick={() => onNav(1)}
-          aria-label={t.lightbox.next}
-          className={navBtn}
-        >
-          →
-        </button>
-      </div>
     </div>
   );
 }

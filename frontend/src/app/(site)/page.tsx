@@ -42,7 +42,13 @@ export default async function LandingPage() {
       <Hero hero={content.hero} />
       <ExpandingHero caption={content.hero.imageCaption} image={content.hero.image} />
       <Statement statement={content.statement} />
-      <Rooms items={content.rooms.items} />
+      <Rooms
+        section={content.rooms}
+        heading={{
+          label: content.rooms.label ?? t.rooms.label,
+          title: content.rooms.title ?? t.rooms.title,
+        }}
+      />
       <Gallery heading={content.gallery} projects={projects} t={t.gallery} />
       <Video section={content.videoSection} t={t.video} />
       <Testimonial testimonial={content.testimonial} />

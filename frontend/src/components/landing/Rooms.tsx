@@ -1,155 +1,155 @@
 "use client";
 
-// Sticky chapters ("Rooms") from hrast: left column pinned 100vh while images
-// scroll on the right. Roman numeral / title / text cross-fade (280ms swap,
-// .5s opacity transition) driven by an IntersectionObserver with rootMargin
-// -45%/-45%; images un-mask via clip-path inset(6% round 20px) → inset(0
-// round 20px) at 20% visibility. Static stacking below 901px.
+// Rooms ("chapters") — the client-approved stacking-cards direction from
+// design/hrast-stack.html (the mizar scroll-stack, sanctioned per AGENTS §1).
+// A centered header over a column of sticky cards that scale + dim as the next
+// card slides over them. CMS-driven: one card per rooms.items entry; cards
+// without a photo render the procedural wood-grain placeholder by species.
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import type { RoomItem } from "@/lib/api/content";
+import { useEffect, useRef } from "react";
+import type { RoomItem, RoomsSection } from "@/lib/api/content";
+import Reveal from "./Reveal";
 import WoodGrain, { patternForSpecies, type GrainFilter } from "./WoodGrain";
 
-// hrast uses w3, w1, w2, w2 for chapters I–IV.
+// hrast-stack palette per card, cycled when there are more than four rooms.
+const CARDS = [
+  { bg: "#EFE9DE", fg: "text-ink", num: "text-sand" },
+  { bg: "#221C16", fg: "text-[#EFE5D8]", num: "text-[#D8CDBC]" },
+  { bg: "#E5DCCB", fg: "text-ink", num: "text-sand" },
+  { bg: "#C8B49A", fg: "text-[#241C10]", num: "text-[#241C10]" },
+];
 const CHAPTER_GRAINS: GrainFilter[] = ["w3", "w1", "w2", "w2"];
 
-export default function Rooms({ items }: { items: RoomItem[] }) {
-  const [current, setCurrent] = useState(0);
-  const [fading, setFading] = useState(false);
-  const [revealed, setRevealed] = useState<boolean[]>(() =>
-    items.map(() => false),
-  );
-  const imgRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const currentRef = useRef(0);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+export default function Rooms({
+  section,
+  heading,
+}: {
+  section: RoomsSection;
+  heading: { label: string; title: string };
+}) {
+  const items = section.items;
+  const cardRefs = useRef<(HTMLElement | null)[]>([]);
 
+  // Scroll-stack: each card (except the last) scales down + dims as the next
+  // approaches the top, so they read as a deck. Off on mobile / reduced motion.
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const targets = imgRefs.current.filter(
-      (el): el is HTMLDivElement => el !== null,
-    );
+    let raf = 0;
 
-    // clip-path un-mask, once, at 20% visibility (same observer settings as .rv)
-    const maskIo = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          const i = Number((entry.target as HTMLElement).dataset.index);
-          setRevealed((prev) =>
-            prev[i] ? prev : prev.map((v, j) => (j === i ? true : v)),
-          );
-          maskIo.unobserve(entry.target);
-        }),
-      { threshold: 0.2 },
-    );
+    const update = () => {
+      raf = 0;
+      const cards = cardRefs.current.filter(
+        (el): el is HTMLElement => el !== null,
+      );
+      if (reduced || window.innerWidth < 901) {
+        cards.forEach((c) => {
+          c.style.transform = "";
+          c.style.filter = "";
+        });
+        return;
+      }
+      cards.forEach((card, i) => {
+        if (i === cards.length - 1) return;
+        const next = cards[i + 1];
+        if (!next) return;
+        const nextTop = next.getBoundingClientRect().top;
+        const prog = Math.min(
+          Math.max(1 - (nextTop - 140) / window.innerHeight, 0),
+          1,
+        );
+        card.style.transform = `scale(${1 - prog * 0.06}) translateY(${prog * -14}px)`;
+        card.style.filter = `brightness(${1 - prog * 0.16})`;
+      });
+    };
 
-    // chapter cross-fade when an image crosses the vertical center band
-    const chapterIo = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          const i = Number((entry.target as HTMLElement).dataset.index);
-          if (i === currentRef.current) return;
-          currentRef.current = i;
-          setFading(true);
-          if (timerRef.current) clearTimeout(timerRef.current);
-          timerRef.current = setTimeout(
-            () => {
-              setCurrent(i);
-              setFading(false);
-            },
-            reduced ? 0 : 280,
-          );
-        }),
-      { rootMargin: "-45% 0px -45% 0px" },
-    );
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
 
-    targets.forEach((el) => {
-      maskIo.observe(el);
-      chapterIo.observe(el);
-    });
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
     return () => {
-      maskIo.disconnect();
-      chapterIo.disconnect();
-      if (timerRef.current) clearTimeout(timerRef.current);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
     };
   }, [items.length]);
 
-  const active = items[current] ?? items[0];
-  if (!active) return null;
-
-  const fade = `transition-opacity duration-500 ${fading ? "opacity-0" : "opacity-100"}`;
+  if (items.length === 0) return null;
 
   return (
-    <section id="rooms" className="border-t border-line">
-      <div className="wrap grid grid-cols-[.9fr_1.1fr] gap-[clamp(40px,6vw,110px)] max-[900px]:grid-cols-1">
-        {/* sticky left column */}
-        <div className="sticky top-0 flex h-screen flex-col justify-center max-[900px]:static max-[900px]:h-auto max-[900px]:pt-20">
-          <span
-            className={`mb-[18px] font-serif text-[15px] tracking-[.2em] text-sand ${fade}`}
-          >
-            {active.numeral}
-          </span>
-          <h2
-            className={`font-serif text-[clamp(40px,4.8vw,72px)] font-normal leading-[1.08] ${fade}`}
-          >
-            {active.title}
+    <section
+      id="rooms"
+      className="border-t border-line py-[clamp(80px,10vw,140px)]"
+    >
+      <div className="wrap">
+        <Reveal className="mb-16 text-center">
+          <span className="caps mb-[22px] block">{heading.label}</span>
+          <h2 className="font-serif text-[clamp(40px,4.8vw,72px)] font-normal leading-[1.08]">
+            {heading.title}
           </h2>
-          <p className={`mt-5 max-w-[38ch] text-soft ${fade}`}>{active.text}</p>
-          <Link
-            href="/configure"
-            className="mt-[30px] inline-block self-start border-b border-ink pb-1 text-[12px] uppercase tracking-label [transition:color_.4s,border-color_.4s] hover:border-sand hover:text-sand"
-          >
-            {active.linkText}
-          </Link>
-        </div>
+        </Reveal>
 
-        {/* scrolling images */}
-        <div className="py-[14vh] max-[900px]:pb-0 max-[900px]:pt-10">
-          {items.map((item, i) => (
-            <div
-              key={i}
-              data-index={i}
-              ref={(el) => {
-                imgRefs.current[i] = el;
-              }}
-              className={`relative mb-[14vh] h-[72vh] overflow-hidden rounded-[20px] transition-[clip-path] duration-[1200ms] ease-hrast max-[900px]:mb-10 max-[900px]:h-[48vh] motion-reduce:[clip-path:none] ${
-                revealed[i]
-                  ? "[clip-path:inset(0_0_0_0_round_20px)]"
-                  : "[clip-path:inset(6%_6%_6%_6%_round_20px)]"
-              }`}
-            >
-              {item.image ? (
-                // eslint-disable-next-line @next/next/no-img-element -- remote CMS host, dimensions fluid
-                <img
-                  src={item.image.url}
-                  alt={item.image.alt}
-                  loading="lazy"
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
-              ) : (
-                <WoodGrain
-                  pattern={patternForSpecies(item.species)}
-                  grain={CHAPTER_GRAINS[i % CHAPTER_GRAINS.length]}
-                  viewBox="0 0 700 800"
-                  className="absolute inset-[-8%] h-[116%] w-[116%]"
-                />
-              )}
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_60%,#1A140EA8)]"
-              />
-              <div className="absolute bottom-[22px] left-[22px] z-[2] text-[#F7F4EF]">
-                <span className="block font-serif text-[20px] leading-[1.08]">
-                  {item.imageTag.title}
-                </span>
-                <span className="caps text-[#D8CDBC]">{item.imageTag.meta}</span>
-              </div>
-            </div>
-          ))}
+        <div className="flex flex-col gap-6">
+          {items.map((item, i) => {
+            const c = CARDS[i % CARDS.length];
+            return (
+              <article
+                key={i}
+                ref={(el) => {
+                  cardRefs.current[i] = el;
+                }}
+                style={{ top: `${96 + i * 20}px`, backgroundColor: c.bg }}
+                className={`sticky grid min-h-[400px] grid-cols-[1.1fr_.9fr] overflow-hidden rounded-[24px] border border-line will-change-transform max-[900px]:static max-[900px]:grid-cols-1 ${c.fg}`}
+              >
+                <div className="flex flex-col justify-between gap-[30px] p-[clamp(30px,4vw,56px)]">
+                  <div>
+                    <span
+                      className={`font-serif text-[16px] tracking-[.2em] ${c.num}`}
+                    >
+                      {item.numeral}
+                    </span>
+                    <h3 className="mb-[14px] mt-4 font-serif text-[clamp(30px,3.6vw,50px)] leading-[1.08]">
+                      {item.title}
+                    </h3>
+                    <p className="max-w-[46ch] text-[16.5px] opacity-[.78]">
+                      {item.text}
+                    </p>
+                  </div>
+                  <Link
+                    href="/configure"
+                    className="self-start border-b border-current pb-1 text-[12px] uppercase tracking-label transition-opacity duration-300 hover:opacity-60"
+                  >
+                    {item.linkText}
+                  </Link>
+                </div>
+                <div className="relative min-h-[260px] overflow-hidden max-[900px]:order-first max-[900px]:min-h-[200px]">
+                  {item.image ? (
+                    // eslint-disable-next-line @next/next/no-img-element -- remote CMS host
+                    <img
+                      src={item.image.url}
+                      alt={item.image.alt}
+                      loading="lazy"
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                  ) : (
+                    <WoodGrain
+                      pattern={patternForSpecies(item.species)}
+                      grain={CHAPTER_GRAINS[i % CHAPTER_GRAINS.length]}
+                      viewBox="0 0 700 700"
+                      className="absolute inset-[-8%] h-[116%] w-[116%]"
+                    />
+                  )}
+                </div>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>
   );
 }
+
+export type { RoomItem };

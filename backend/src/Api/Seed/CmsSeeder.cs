@@ -105,6 +105,8 @@ public static class CmsSeeder
         yield return ("rooms",
             new
             {
+                label = "Atelje · kaj izdelujemo",
+                title = "Vsak prostor, ena delavnica",
                 items = new object[]
                 {
                     new
@@ -147,6 +149,8 @@ public static class CmsSeeder
             },
             new
             {
+                label = "The atelier · what we make",
+                title = "Every room, one bench",
                 items = new object[]
                 {
                     new
@@ -285,12 +289,12 @@ public static class CmsSeeder
         yield return ("seo",
             new
             {
-                title = "HRAST — vrhunsko mizarstvo",
+                title = "mazzidesign — vrhunsko mizarstvo",
                 description = "Kuhinje, kopalnice, spalnice in unikatni kosi pohištva — narisani, izdelani in vgrajeni v enem ateljeju v Ljubljani.",
             },
             new
             {
-                title = "HRAST — fine woodwork",
+                title = "mazzidesign — fine woodwork",
                 description = "Kitchens, bathrooms, bedrooms and singular pieces of furniture — drawn, built and installed by one atelier in Ljubljana.",
             });
     }

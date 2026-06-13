@@ -41,6 +41,7 @@ export interface VideoDict {
 export interface UiDict {
   nav: NavDict;
   footer: { line: string };
+  rooms: { label: string; title: string };
   gallery: GalleryDict;
   video: VideoDict;
 }
@@ -56,6 +57,10 @@ export const UI: Record<Locale, UiDict> = {
     },
     footer: {
       line: "Kuhinje · Kopalnice · Spalnice · Posamezni kosi · © 2026",
+    },
+    rooms: {
+      label: "Atelje · kaj izdelujemo",
+      title: "Vsak prostor, ena delavnica",
     },
     gallery: {
       all: "Vse",
@@ -99,6 +104,10 @@ export const UI: Record<Locale, UiDict> = {
     },
     footer: {
       line: "Kitchens · Bathrooms · Bedrooms · Singular pieces · © 2026",
+    },
+    rooms: {
+      label: "The atelier · what we make",
+      title: "Every room, one bench",
     },
     gallery: {
       all: "All",

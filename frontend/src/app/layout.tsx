@@ -18,7 +18,7 @@ const mulish = Mulish({
 });
 
 export const metadata: Metadata = {
-  title: "Mizarstvo — atelje za pohištvo po meri",
+  title: "mazzidesign — atelje za pohištvo po meri",
   description:
     "Kuhinje, omare in pohištvo po meri iz masivnega lesa. Custom woodworking atelier.",
 };

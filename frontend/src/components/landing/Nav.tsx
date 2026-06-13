@@ -44,9 +44,9 @@ export default function Nav({ locale, t }: { locale: Locale; t: NavDict }) {
         </div>
         <a
           href="#top"
-          className="font-serif text-[22px] uppercase leading-[1.08] tracking-brand"
+          className="font-serif text-[22px] uppercase leading-[1.08] tracking-[.22em]"
         >
-          Hrast
+          mazzidesign
         </a>
         <div className="flex items-center gap-[26px]">
           <LocaleToggle locale={locale} ariaLabel={t.localeAria} />

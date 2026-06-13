@@ -198,13 +198,17 @@ interface RoomItem {
 }
 
 interface RoomsJson {
+  label?: string;
+  title?: string;
   items: RoomItem[];
 }
 
 const roomsDef: SectionDef<RoomsJson> = {
   title: "Prostori (rooms)",
-  defaults: { items: [] },
+  defaults: { label: "", title: "", items: [] },
   schema: z.object({
+    label: str.optional(),
+    title: str.optional(),
     items: z.array(
       z.object({
         numeral: str.min(1),
@@ -226,6 +230,19 @@ const roomsDef: SectionDef<RoomsJson> = {
     })),
   }),
   Form: ({ value, onChange }) => (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <TextField
+          label="Oznaka razdelka (label)"
+          value={value.label ?? ""}
+          onChange={(label) => onChange({ ...value, label })}
+        />
+        <TextField
+          label="Naslov razdelka"
+          value={value.title ?? ""}
+          onChange={(title) => onChange({ ...value, title })}
+        />
+      </div>
     <Repeater
       label="Prostori"
       items={value.items}
@@ -293,6 +310,7 @@ const roomsDef: SectionDef<RoomsJson> = {
         </div>
       )}
     />
+    </div>
   ),
 };
 

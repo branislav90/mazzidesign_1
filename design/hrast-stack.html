@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HRAST — fine woodwork</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Mulish:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --white:#F7F4EF;
+  --ink:#221C16;
+  --sand:#C8B49A;
+  --soft:#8A8074;
+  --line:#221C161C;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--white);color:var(--ink);font-family:"Mulish",sans-serif;font-size:16.5px;line-height:1.75;overflow-x:hidden}
+::selection{background:var(--sand);color:var(--ink)}
+h1,h2,h3,.serif{font-family:"Marcellus",serif;font-weight:400;line-height:1.08}
+.caps{font-size:11.5px;letter-spacing:.32em;text-transform:uppercase;color:var(--soft);font-weight:600}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1280px;margin:0 auto;padding:0 clamp(22px,4vw,56px)}
+section{position:relative}
+
+/* reveal: slow, blurred, luxurious */
+.rv{opacity:0;transform:translateY(26px);filter:blur(6px);transition:opacity 1.3s var(--ease),transform 1.3s var(--ease),filter 1.3s var(--ease)}
+.rv.in{opacity:1;transform:none;filter:none}
+
+/* nav */
+nav{position:fixed;inset:0 0 auto;z-index:90;transition:background .5s,border-color .5s;border-bottom:1px solid transparent}
+nav.solid{background:#F7F4EFE8;backdrop-filter:blur(14px);border-color:var(--line)}
+.ni{display:flex;justify-content:space-between;align-items:center;height:76px}
+.brand{font-family:"Marcellus",serif;font-size:22px;letter-spacing:.34em;text-transform:uppercase}
+.nl{display:flex;gap:38px}
+.nl a{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--soft);transition:color .4s}
+.nl a:hover{color:var(--ink)}
+.nav-q{font-size:12px;letter-spacing:.22em;text-transform:uppercase;border-bottom:1px solid var(--ink);padding-bottom:3px;transition:color .4s,border-color .4s}
+.nav-q:hover{color:var(--sand);border-color:var(--sand)}
+
+/* hero */
+.hero{padding:170px 0 0;text-align:center}
+.hero .caps{display:block;margin-bottom:30px;opacity:0;animation:f 1.4s .2s var(--ease) forwards}
+.hero h1{font-size:clamp(44px,6.6vw,104px);letter-spacing:.01em;max-width:18ch;margin:0 auto}
+.hero h1 .l{display:block;overflow:hidden}
+.hero h1 .l span{display:block;transform:translateY(108%);animation:up 1.4s var(--ease) forwards}
+.hero h1 .l:nth-child(2) span{animation-delay:.15s}
+.hero h1 em{font-style:italic;color:var(--sand)}
+@keyframes up{to{transform:none}}
+@keyframes f{to{opacity:1}}
+.hero .sub{max-width:52ch;margin:34px auto 0;color:var(--soft);font-size:17px;opacity:0;animation:f 1.4s .7s var(--ease) forwards}
+
+/* expanding image */
+.expand-zone{height:170vh;position:relative;margin-top:60px}
+.expand-pin{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.exp{
+  width:100%;height:84vh;border-radius:28px;overflow:hidden;position:relative;
+  transform:scale(.62);will-change:transform,border-radius;
+}
+.exp svg{position:absolute;inset:-8%;width:116%;height:116%}
+.exp .exp-cap{
+  position:absolute;left:0;right:0;bottom:42px;text-align:center;z-index:2;
+  color:#F7F4EF;opacity:0;transition:opacity .8s;
+}
+.exp.full .exp-cap{opacity:1}
+.exp .exp-cap .serif{font-size:clamp(22px,2.6vw,34px);display:block}
+.exp .exp-cap .caps{color:#D8CDBC;margin-top:8px;display:block}
+.exp::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,#1A140EBF)}
+
+/* statement */
+.statement{padding:clamp(110px,13vw,190px) 0;text-align:center}
+.statement .serif{font-size:clamp(26px,3.4vw,46px);max-width:26ch;margin:26px auto 0;line-height:1.3}
+.statement .serif em{font-style:italic;color:var(--sand)}
+
+/* stacking cards (ported from mizar, styled in hrast palette) */
+.chapters{border-top:1px solid var(--line);padding:clamp(80px,10vw,140px) 0}
+.ch-head{text-align:center;margin-bottom:64px}
+.ch-head .caps{display:block;margin-bottom:22px}
+.ch-head h2{font-size:clamp(40px,4.8vw,72px)}
+.stack{display:flex;flex-direction:column;gap:24px}
+.scard{
+  position:sticky;border-radius:24px;overflow:hidden;
+  min-height:400px;display:grid;grid-template-columns:1.1fr .9fr;
+  border:1px solid var(--line);will-change:transform;
+}
+.scard:nth-child(1){top:96px}
+.scard:nth-child(2){top:116px}
+.scard:nth-child(3){top:136px}
+.scard:nth-child(4){top:156px}
+.scard .txt{padding:clamp(30px,4vw,56px);display:flex;flex-direction:column;justify-content:space-between;gap:30px}
+.scard .txt .n{font-family:"Marcellus",serif;font-size:16px;letter-spacing:.2em;color:var(--sand)}
+.scard h3{font-size:clamp(30px,3.6vw,50px);margin:16px 0 14px}
+.scard .txt p{color:inherit;opacity:.78;max-width:46ch;font-size:16.5px}
+.scard .feat{display:flex;gap:8px;flex-wrap:wrap}
+.scard .feat span{border:1px solid currentColor;opacity:.55;border-radius:999px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding:7px 15px}
+.scard .img{position:relative;overflow:hidden;min-height:260px}
+.scard .img svg{position:absolute;inset:-8%;width:116%;height:116%}
+.scard .ch-link{font-size:12px;letter-spacing:.22em;text-transform:uppercase;border-bottom:1px solid currentColor;padding-bottom:4px;align-self:flex-start;transition:opacity .4s}
+.scard .ch-link:hover{opacity:.6}
+.sc1{background:#EFE9DE;color:var(--ink)}
+.sc2{background:var(--ink);color:#EFE5D8}
+.sc3{background:#E5DCCB;color:var(--ink)}
+.sc4{background:var(--sand);color:#241C10}
+.sc2 .txt .n{color:#D8CDBC}
+
+/* mosaic gallery */
+.gstrip-sec{padding:clamp(100px,12vw,170px) 0;border-top:1px solid var(--line)}
+.gs-head{text-align:center;margin-bottom:64px}
+.gs-head h2{font-size:clamp(34px,4.4vw,62px);margin-top:22px}
+.mosaic{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:13vh;gap:clamp(14px,1.8vw,24px)}
+.mtile{
+  position:relative;border-radius:18px;overflow:hidden;cursor:pointer;border:1px solid var(--line);
+  transition:transform .6s var(--ease);
+}
+.mtile .mwood{position:absolute;inset:-14%;width:128%;height:128%;will-change:transform}
+.mtile::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,#1A140EB0);opacity:.85;transition:opacity .5s}
+.mtile:hover::after{opacity:1}
+.mtile .tag{position:absolute;left:20px;bottom:18px;z-index:2;color:#F7F4EF;transform:translateY(6px);opacity:.9;transition:transform .5s var(--ease),opacity .5s}
+.mtile:hover .tag{transform:none;opacity:1}
+.mtile .tag .serif{font-size:clamp(17px,1.7vw,22px);display:block}
+.mtile .tag .caps{color:#D8CDBC}
+.mtile .plus{
+  position:absolute;top:16px;right:16px;z-index:2;width:38px;height:38px;border-radius:50%;
+  border:1px solid #F7F4EF66;background:#F7F4EF1A;backdrop-filter:blur(4px);color:#F7F4EF;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+  opacity:0;transform:scale(.8);transition:opacity .4s,transform .4s var(--ease),background .3s;
+}
+.mtile:hover .plus{opacity:1;transform:none}
+.mtile:hover .plus{background:var(--sand)}
+/* asymmetric spans */
+.t1{grid-column:1/7;grid-row:span 4}
+.t2{grid-column:7/13;grid-row:span 3}
+.t3{grid-column:7/10;grid-row:span 3}
+.t4{grid-column:10/13;grid-row:span 3}
+.t5{grid-column:1/5;grid-row:span 3}
+.t6{grid-column:5/13;grid-row:span 3}
+
+/* lightbox */
+#lb{position:fixed;inset:0;z-index:300;background:#1A140EF2;backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:clamp(16px,4vw,60px)}
+#lb.open{display:flex}
+#lb .lb-fig{max-width:1040px;width:100%;border-radius:18px;overflow:hidden;background:#221C16;border:1px solid #F7F4EF26}
+#lb .lb-ph{height:clamp(300px,64vh,660px);position:relative;overflow:hidden}
+#lb .lb-ph svg{position:absolute;inset:-8%;width:116%;height:116%}
+#lb .lb-bar{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:18px 24px;color:#F7F4EF}
+#lb .lb-bar .serif{font-size:21px;display:block}
+#lb .lb-bar .caps{color:#A89A8C;margin-top:3px}
+#lb .lb-count{font-family:"Mulish",sans-serif;font-size:13px;color:#A89A8C;letter-spacing:.1em}
+#lb .lb-btns{display:flex;gap:8px}
+#lb .lb-btns button{width:46px;height:46px;border-radius:50%;border:1px solid #F7F4EF33;background:transparent;color:#F7F4EF;font-size:18px;cursor:pointer;transition:background .3s,border-color .3s}
+#lb .lb-btns button:hover{background:var(--sand);border-color:var(--sand);color:var(--ink)}
+
+/* video */
+.video-sec{padding:clamp(100px,12vw,170px) 0;border-top:1px solid var(--line)}
+.v-head{text-align:center;margin-bottom:56px}
+.v-head h2{font-size:clamp(34px,4.4vw,62px);margin-top:22px}
+.vframe{position:relative;border-radius:24px;overflow:hidden;aspect-ratio:16/9;background:#1A140E}
+.vframe .vcover{position:absolute;inset:0;cursor:pointer}
+.vframe .vcover svg.wd{position:absolute;inset:-8%;width:116%;height:116%;filter:brightness(.55)}
+.vframe .vcover::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 30%,#1A140E99)}
+.vplay{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3;
+  width:96px;height:96px;border-radius:50%;border:1px solid #F7F4EF66;background:#F7F4EF14;
+  backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;
+  transition:transform .6s var(--ease),background .4s,border-color .4s;
+}
+.vcover:hover .vplay{transform:translate(-50%,-50%) scale(1.12);background:var(--sand);border-color:var(--sand)}
+.vplay::before{content:"";border-style:solid;border-width:13px 0 13px 22px;border-color:transparent transparent transparent #F7F4EF;margin-left:5px}
+.vcover .vlab{position:absolute;left:0;right:0;bottom:34px;text-align:center;z-index:3;color:#F7F4EF}
+.vcover .vlab .serif{font-size:clamp(20px,2.2vw,28px);display:block}
+.vcover .vlab .caps{color:#D8CDBC;margin-top:6px;display:block}
+.vframe iframe,.vframe video{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vnote{display:none;position:absolute;inset:0;align-items:center;justify-content:center;color:#D8CDBC;text-align:center;padding:30px}
+
+/* socials */
+.socials{display:flex;gap:14px;justify-content:center;margin-top:34px}
+.socials a{
+  width:48px;height:48px;border-radius:50%;border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;color:var(--ink);
+  transition:background .4s,color .4s,border-color .4s,transform .4s var(--ease);
+}
+.socials a:hover{background:var(--ink);color:var(--white);border-color:var(--ink);transform:translateY(-3px)}
+.socials svg{width:18px;height:18px;fill:currentColor}
+.foot .socials{margin:0;justify-content:flex-end}
+.foot .socials a{width:38px;height:38px}
+.foot .socials svg{width:15px;height:15px}
+.tquote{padding:clamp(100px,12vw,170px) 0;text-align:center;border-top:1px solid var(--line)}
+.tquote .serif{font-size:clamp(24px,3.2vw,42px);font-style:italic;max-width:30ch;margin:0 auto;line-height:1.4}
+.tquote .who{margin-top:30px}
+
+/* process / numbers */
+.numbers{border-top:1px solid var(--line);padding:clamp(90px,11vw,150px) 0}
+.numbers .wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:50px;text-align:center}
+.nm .serif{font-size:clamp(44px,5vw,72px);display:block}
+.nm .serif i{font-style:normal;color:var(--sand)}
+.nm .caps{margin-top:10px;display:block}
+
+/* cta */
+.cta-sec{border-top:1px solid var(--line);padding:clamp(110px,14vw,200px) 0;text-align:center}
+.cta-sec h2{font-size:clamp(38px,5.6vw,84px);max-width:16ch;margin:26px auto 0}
+.cta-sec h2 em{font-style:italic;color:var(--sand)}
+.cta-sec p{color:var(--soft);max-width:48ch;margin:28px auto 44px}
+.btn{
+  display:inline-block;border:1px solid var(--ink);border-radius:999px;
+  padding:18px 44px;font-size:12.5px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;
+  position:relative;overflow:hidden;z-index:1;transition:color .5s var(--ease);
+}
+.btn::before{content:"";position:absolute;inset:0;background:var(--ink);transform:translateY(101%);transition:transform .5s var(--ease);z-index:-1}
+.btn:hover{color:var(--white)}
+.btn:hover::before{transform:none}
+.cta-alt{display:block;margin-top:26px;color:var(--soft);font-size:14.5px}
+.cta-alt a{border-bottom:1px solid var(--line);transition:color .4s,border-color .4s}
+.cta-alt a:hover{color:var(--sand);border-color:var(--sand)}
+
+footer{border-top:1px solid var(--line);padding:36px 0;color:var(--soft);font-size:13px}
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;align-items:center}
+.foot .brand{font-size:15px}
+
+@media(max-width:900px){
+  .nl{display:none}
+  .scard{grid-template-columns:1fr;position:relative;top:auto!important}
+  .scard .img{min-height:200px;order:-1}
+  .mosaic{grid-auto-rows:11vh}
+  .expand-zone{height:auto;margin-top:40px}
+  .expand-pin{position:static;height:auto}
+  .exp{transform:none;height:54vh;border-radius:20px}
+  .exp .exp-cap{opacity:1}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .rv{opacity:1;transform:none;filter:none}
+  .hero h1 .l span{transform:none}
+  .hero .caps,.hero .sub{opacity:1}
+  .exp{transform:none}
+  .exp .exp-cap{opacity:1}
+  .scard{transform:none!important}
+  .mtile .mwood{transform:none!important}
+}
+@media(max-width:760px){
+  .mosaic{grid-template-columns:1fr;grid-auto-rows:auto}
+  .t1,.t2,.t3,.t4,.t5,.t6{grid-column:1/2;grid-row:auto}
+  .mtile{height:46vh}
+  .mtile .mwood{inset:-8%;width:116%;height:116%}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <pattern id="g1" width="700" height="52" patternUnits="userSpaceOnUse">
+      <rect width="700" height="52" fill="#9C6B39"/><rect y="6" width="700" height="16" fill="#AE7C46"/><rect y="28" width="700" height="9" fill="#8A5A2E"/><rect y="43" width="700" height="4" fill="#6E441F"/>
+    </pattern>
+    <pattern id="g2" width="700" height="60" patternUnits="userSpaceOnUse">
+      <rect width="700" height="60" fill="#5C3A22"/><rect y="8" width="700" height="18" fill="#6E472A"/><rect y="34" width="700" height="10" fill="#4C2E1A"/><rect y="50" width="700" height="5" fill="#3B2212"/>
+    </pattern>
+    <pattern id="g3" width="700" height="46" patternUnits="userSpaceOnUse">
+      <rect width="700" height="46" fill="#D9C5A2"/><rect y="5" width="700" height="14" fill="#E4D2B2"/><rect y="25" width="700" height="8" fill="#C7B08A"/><rect y="39" width="700" height="4" fill="#AE9468"/>
+    </pattern>
+    <filter id="w1" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.013 0.09" numOctaves="5" seed="4"/><feDisplacementMap in="SourceGraphic" scale="46" xChannelSelector="R" yChannelSelector="G"/></filter>
+    <filter id="w2" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.011 0.075" numOctaves="5" seed="11"/><feDisplacementMap in="SourceGraphic" scale="58" xChannelSelector="R" yChannelSelector="G"/></filter>
+    <filter id="w3" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.015 0.10" numOctaves="4" seed="23"/><feDisplacementMap in="SourceGraphic" scale="40" xChannelSelector="R" yChannelSelector="G"/></filter>
+  </defs>
+</svg>
+
+<nav id="nav">
+  <div class="wrap ni">
+    <div class="nl">
+      <a href="#rooms">Rooms</a><a href="#gallery">Gallery</a><a href="#film">Film</a>
+    </div>
+    <a class="brand" href="#top">Hrast</a>
+    <a class="nav-q" href="#contact">Enquire</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <span class="caps">Fine woodwork · Ljubljana · since 1998</span>
+    <h1>
+      <span class="l"><span>Rooms composed</span></span>
+      <span class="l"><span>in <em>solid wood</em></span></span>
+    </h1>
+    <p class="sub">Kitchens, bathrooms, bedrooms and singular pieces of furniture — drawn, built and installed by one atelier.</p>
+  </div>
+</header>
+
+<div class="expand-zone">
+  <div class="expand-pin">
+    <div class="exp" id="exp">
+      <svg viewBox="0 0 1400 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <rect x="-140" y="-80" width="1680" height="960" fill="url(#g1)" filter="url(#w1)"/>
+      </svg>
+      <div class="exp-cap">
+        <span class="serif">European oak, quarter-sawn</span>
+        <span class="caps">The material we build a house around</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="statement">
+  <div class="wrap rv">
+    <span class="caps">The atelier</span>
+    <p class="serif">We make few things, slowly, for people who intend to keep them <em>for a lifetime</em>.</p>
+  </div>
+</section>
+
+<section class="chapters" id="rooms">
+  <div class="wrap">
+    <div class="ch-head rv">
+      <span class="caps">The atelier · what we make</span>
+      <h2>Every room, one bench</h2>
+    </div>
+    <div class="stack">
+      <div class="scard sc1">
+        <div class="txt">
+          <div><span class="n">I</span><h3>The kitchen</h3><p>The room where everything happens. Planned around your habits, approved in 3D, and built from quarter-sawn boards.</p></div>
+          <a class="ch-link" href="#contact">Begin with this room</a>
+        </div>
+        <div class="img"><svg viewBox="0 0 700 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-70" y="-70" width="840" height="840" fill="url(#g1)" filter="url(#w3)"/></svg></div>
+      </div>
+      <div class="scard sc2">
+        <div class="txt">
+          <div><span class="n">II</span><h3>The bathroom</h3><p>Quiet storage in moisture-stable species and sealed finishes — composed for the calmest room of the house.</p></div>
+          <a class="ch-link" href="#contact">Begin with this room</a>
+        </div>
+        <div class="img"><svg viewBox="0 0 700 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-70" y="-70" width="840" height="840" fill="url(#g3)" filter="url(#w1)"/></svg></div>
+      </div>
+      <div class="scard sc3">
+        <div class="txt">
+          <div><span class="n">III</span><h3>The bedroom</h3><p>Wardrobes and walk-ins that read as architecture — floor to ceiling, edge to edge, silent on their hinges.</p></div>
+          <a class="ch-link" href="#contact">Begin with this room</a>
+        </div>
+        <div class="img"><svg viewBox="0 0 700 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-70" y="-70" width="840" height="840" fill="url(#g2)" filter="url(#w2)"/></svg></div>
+      </div>
+      <div class="scard sc4">
+        <div class="txt">
+          <div><span class="n">IV</span><h3>The singular piece</h3><p>A table, a staircase, a library wall. Drawn from a blank sheet and made once, for one address only.</p></div>
+          <a class="ch-link" href="#contact">Commission a piece</a>
+        </div>
+        <div class="img"><svg viewBox="0 0 700 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-70" y="-70" width="840" height="840" fill="url(#g1)" filter="url(#w2)"/></svg></div>
+      </div>
+    </div>
+  </div>
+</section>
+</section>
+
+<section class="gstrip-sec" id="gallery">
+  <div class="wrap gs-head rv">
+    <span class="caps">Selected works</span>
+    <h2>From the gallery</h2>
+  </div>
+  <div class="wrap">
+    <div class="mosaic rv" id="mosaic">
+      <figure class="mtile t1" data-t="Penthouse kitchen" data-d="Oak · Ljubljana · 2026" data-g="g1" data-f="w1">
+        <svg class="mwood" viewBox="0 0 700 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-70" y="-90" width="840" height="1080" fill="url(#g1)" filter="url(#w1)"/></svg>
+        <span class="plus">+</span>
+        <figcaption class="tag"><span class="serif">Penthouse kitchen</span><span class="caps">Oak · Ljubljana</span></figcaption>
+      </figure>
+      <figure class="mtile t2" data-t="Library wall" data-d="Walnut · Bled · 2025" data-g="g2" data-f="w2">
+        <svg class="mwood" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-90" y="-60" width="1080" height="720" fill="url(#g2)" filter="url(#w2)"/></svg>
+        <span class="plus">+</span>
+        <figcaption class="tag"><span class="serif">Library wall</span><span class="caps">Walnut · Bled</span></figcaption>
+      </figure>
+      <figure class="mtile t3" data-t="Double vanity" data-d="Ash · Maribor · 2025" data-g="g3" data-f="w3">
+        <svg class="mwood" viewBox="0 0 600 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-60" y="-70" width="720" height="840" fill="url(#g3)" filter="url(#w3)"/></svg>
+        <span class="plus">+</span>
+        <figcaption class="tag"><span class="serif">Double vanity</span><span class="caps">Ash · Maribor</span></figcaption>
+      </figure>
+      <figure class="mtile t4" data-t="Solid oak staircase" data-d="Oak · Škofja Loka · 2024" data-g="g1" data-f="w3">
+        <svg class="mwood" viewBox="0 0 600 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-60" y="-70" width="720" height="840" fill="url(#g1)" filter="url(#w3)"/></svg>
+        <span class="plus">+</span>
+        <figcaption class="tag"><span class="serif">Staircase</span><span class="caps">Oak · Škofja Loka</span></figcaption>
+      </figure>
+      <figure class="mtile t5" data-t="Walk-in closet" data-d="Ash · Domžale · 2024" data-g="g3" data-f="w2">
+        <svg class="mwood" viewBox="0 0 600 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-60" y="-70" width="720" height="840" fill="url(#g3)" filter="url(#w2)"/></svg>
+        <span class="plus">+</span>
+        <figcaption class="tag"><span class="serif">Walk-in closet</span><span class="caps">Ash · Domžale</span></figcaption>
+      </figure>
+      <figure class="mtile t6" data-t="Smoked oak kitchen" data-d="Smoked oak · Celje · 2025" data-g="g2" data-f="w1">
+        <svg class="mwood" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-90" y="-60" width="1080" height="720" fill="url(#g2)" filter="url(#w1)"/></svg>
+        <span class="plus">+</span>
+        <figcaption class="tag"><span class="serif">Smoked oak kitchen</span><span class="caps">Smoked oak · Celje</span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<div id="lb" role="dialog" aria-modal="true" aria-label="Project preview">
+  <div class="lb-fig">
+    <div class="lb-ph" id="lbPh"></div>
+    <div class="lb-bar">
+      <span><span class="serif" id="lbT"></span><span class="caps" id="lbD"></span></span>
+      <span class="lb-count" id="lbC"></span>
+      <span class="lb-btns"><button id="lbPrev" aria-label="Previous">←</button><button id="lbNext" aria-label="Next">→</button><button id="lbX" aria-label="Close">✕</button></span>
+    </div>
+  </div>
+</div>
+
+<section class="video-sec" id="film">
+  <div class="wrap v-head rv">
+    <span class="caps">The workshop, in motion</span>
+    <h2>Watch a room take shape</h2>
+  </div>
+  <div class="wrap">
+    <div class="vframe rv" id="vframe" data-yt="">
+      <div class="vcover" id="vcover" role="button" aria-label="Play film" tabindex="0">
+        <svg class="wd" viewBox="0 0 1400 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-140" y="-80" width="1680" height="960" fill="url(#g2)" filter="url(#w2)"/></svg>
+        <span class="vplay"></span>
+        <span class="vlab"><span class="serif">From rough board to finished kitchen</span><span class="caps">3 min · filmed in our atelier</span></span>
+      </div>
+      <div class="vnote" id="vnote"><span class="serif">Add your film: set data-yt="YouTubeID" on #vframe, or place a &lt;video src&gt; inside it.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="tquote">
+  <div class="wrap rv">
+    <p class="serif">“They measured our crooked 19th-century walls and made a kitchen that fits them like it grew there.”</p>
+    <div class="who"><span class="caps">M. &amp; T. Kovač — Ljubljana</span></div>
+  </div>
+</section>
+
+<div class="numbers">
+  <div class="wrap">
+    <div class="nm rv"><span class="serif"><span class="cn" data-to="27">0</span></span><span class="caps">Years of craft</span></div>
+    <div class="nm rv"><span class="serif"><span class="cn" data-to="400">0</span><i>+</i></span><span class="caps">Rooms delivered</span></div>
+    <div class="nm rv"><span class="serif"><span class="cn" data-to="5">0</span><i> yr</i></span><span class="caps">Warranty</span></div>
+    <div class="nm rv"><span class="serif"><span class="cn" data-to="1">0</span></span><span class="caps">Atelier, start to finish</span></div>
+  </div>
+</div>
+
+<section class="cta-sec" id="contact">
+  <div class="wrap rv">
+    <span class="caps">Commissions · 2026</span>
+    <h2>Begin with a <em>conversation</em></h2>
+    <p>Tell us about the room. We visit, measure, and return with a 3D design and a fixed quote — without obligation.</p>
+    <a class="btn" href="mailto:atelier@hrast.si">Enquire</a>
+    <span class="cta-alt">or call <a href="tel:+38641123456">041 123 456</a> · Obrtna cona 12, Ljubljana</span>
+    <div class="socials">
+      <a href="https://www.instagram.com/yourstudio" aria-label="Instagram" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2Zm0 1.8c-3.1 0-3.5 0-4.8.1-1.1.1-1.5.2-1.8.3-.4.2-.7.4-1 .7-.3.3-.5.6-.7 1-.1.3-.3.7-.3 1.8-.1 1.3-.1 1.7-.1 4.8s0 3.5.1 4.8c.1 1.1.2 1.5.3 1.8.2.4.4.7.7 1 .3.3.6.5 1 .7.3.1.7.3 1.8.3 1.3.1 1.7.1 4.8.1s3.5 0 4.8-.1c1.1-.1 1.5-.2 1.8-.3.4-.2.7-.4 1-.7.3-.3.5-.6.7-1 .1-.3.3-.7.3-1.8.1-1.3.1-1.7.1-4.8s0-3.5-.1-4.8c-.1-1.1-.2-1.5-.3-1.8-.2-.4-.4-.7-.7-1-.3-.3-.6-.5-1-.7-.3-.1-.7-.3-1.8-.3-1.3-.1-1.7-.1-4.8-.1Zm0 3.1a4.9 4.9 0 1 1 0 9.8 4.9 4.9 0 0 1 0-9.8Zm0 1.8a3.1 3.1 0 1 0 0 6.2 3.1 3.1 0 0 0 0-6.2Zm5.1-3.2a1.15 1.15 0 1 1 0 2.3 1.15 1.15 0 0 1 0-2.3Z"/></svg></a>
+      <a href="https://www.facebook.com/yourstudio" aria-label="Facebook" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M13.5 21v-7.6h2.6l.4-3h-3V8.5c0-.9.2-1.5 1.5-1.5h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.8v3h2.6V21h3.1Z"/></svg></a>
+      <a href="https://www.youtube.com/@yourstudio" aria-label="YouTube" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2 26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8ZM10 15.2V8.8L15.5 12 10 15.2Z"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <span class="brand">Hrast</span>
+    <span>Kitchens · Bathrooms · Bedrooms · Singular pieces · © 2026</span>
+    <div class="socials">
+      <a href="https://www.instagram.com/yourstudio" aria-label="Instagram" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2Zm0 4.9a4.9 4.9 0 1 1 0 9.8 4.9 4.9 0 0 1 0-9.8Zm0 1.8a3.1 3.1 0 1 0 0 6.2 3.1 3.1 0 0 0 0-6.2Zm5.1-3.2a1.15 1.15 0 1 1 0 2.3 1.15 1.15 0 0 1 0-2.3Z"/></svg></a>
+      <a href="https://www.facebook.com/yourstudio" aria-label="Facebook" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M13.5 21v-7.6h2.6l.4-3h-3V8.5c0-.9.2-1.5 1.5-1.5h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.8v3h2.6V21h3.1Z"/></svg></a>
+      <a href="https://www.youtube.com/@yourstudio" aria-label="YouTube" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2 26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8ZM10 15.2V8.8L15.5 12 10 15.2Z"/></svg></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const nav=document.getElementById('nav');
+addEventListener('scroll',()=>nav.classList.toggle('solid',scrollY>40),{passive:true});
+
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){
+    e.target.classList.add('in');
+    const c=e.target.querySelector?.('.cn');if(c)count(c);
+    io.unobserve(e.target);
+  }
+}),{threshold:.2});
+document.querySelectorAll('.rv,.nm').forEach(el=>io.observe(el));
+
+function count(el){
+  if(el.dataset.done)return;el.dataset.done=1;
+  const to=+el.dataset.to;if(reduced){el.textContent=to;return}
+  const t0=performance.now(),dur=1600;
+  (function t(now){const p=Math.min((now-t0)/dur,1),e=1-Math.pow(1-p,3);
+    el.textContent=Math.round(to*e);if(p<1)requestAnimationFrame(t)})(t0);
+}
+
+const exp=document.getElementById('exp'),zone=document.querySelector('.expand-zone');
+addEventListener('scroll',()=>{
+  if(reduced||innerWidth<901)return;
+  const r=zone.getBoundingClientRect();
+  const total=zone.offsetHeight-innerHeight;
+  const p=Math.min(Math.max(-r.top/total,0),1);
+  const s=.62+p*.38;
+  exp.style.transform=`scale(${s.toFixed(4)})`;
+  exp.style.borderRadius=(28-p*28).toFixed(1)+'px';
+  exp.classList.toggle('full',p>.85);
+},{passive:true});
+
+const cards=[...document.querySelectorAll('.scard')];
+addEventListener('scroll',()=>{
+  if(reduced||innerWidth<901)return;
+  cards.forEach((card,i)=>{
+    if(i===cards.length-1)return;
+    const next=cards[i+1].getBoundingClientRect().top;
+    const prog=Math.min(Math.max(1-(next-140)/innerHeight,0),1);
+    card.style.transform=`scale(${1-prog*0.06}) translateY(${prog*-14}px)`;
+    card.style.filter=`brightness(${1-prog*0.16})`;
+  });
+},{passive:true});
+
+const vframe=document.getElementById('vframe'),vcover=document.getElementById('vcover');
+function playFilm(){
+  const yt=vframe.dataset.yt;
+  const vid=vframe.querySelector('video');
+  if(yt){
+    vcover.remove();
+    const f=document.createElement('iframe');
+    f.src='https://www.youtube-nocookie.com/embed/'+yt+'?autoplay=1&rel=0';
+    f.allow='autoplay; fullscreen; picture-in-picture';
+    f.allowFullscreen=true;
+    vframe.appendChild(f);
+  }else if(vid){
+    vcover.remove();vid.controls=true;vid.play();
+  }else{
+    document.getElementById('vnote').style.display='flex';
+    setTimeout(()=>document.getElementById('vnote').style.display='none',4000);
+  }
+}
+vcover.addEventListener('click',playFilm);
+vcover.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')playFilm()});
+
+/* mosaic parallax */
+const tiles=[...document.querySelectorAll('.mtile')];
+const speeds=[0.10,-0.07,0.06,-0.05,0.08,-0.06];
+addEventListener('scroll',()=>{
+  if(reduced||innerWidth<761)return;
+  tiles.forEach((t,i)=>{
+    const r=t.getBoundingClientRect();
+    if(r.bottom<0||r.top>innerHeight)return;
+    const off=(r.top+r.height/2-innerHeight/2)*(speeds[i%speeds.length]);
+    const w=t.querySelector('.mwood');
+    if(w)w.style.transform=`translateY(${off}px)`;
+  });
+},{passive:true});
+
+/* lightbox */
+const lb=document.getElementById('lb'),lbPh=document.getElementById('lbPh'),
+      lbT=document.getElementById('lbT'),lbD=document.getElementById('lbD'),lbC=document.getElementById('lbC');
+let lbi=0;
+function openLb(i){lbi=i;showLb();lb.classList.add('open');document.body.style.overflow='hidden'}
+function showLb(){
+  const t=tiles[lbi];
+  lbPh.innerHTML=`<svg viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-100" y="-70" width="1200" height="840" fill="url(#${t.dataset.g})" filter="url(#${t.dataset.f})"/></svg>`;
+  lbT.textContent=t.dataset.t;lbD.textContent=t.dataset.d;lbC.textContent=(lbi+1)+' / '+tiles.length;
+}
+function closeLb(){lb.classList.remove('open');document.body.style.overflow=''}
+tiles.forEach((t,i)=>t.addEventListener('click',()=>openLb(i)));
+document.getElementById('lbX').addEventListener('click',closeLb);
+document.getElementById('lbNext').addEventListener('click',()=>{lbi=(lbi+1)%tiles.length;showLb()});
+document.getElementById('lbPrev').addEventListener('click',()=>{lbi=(lbi-1+tiles.length)%tiles.length;showLb()});
+lb.addEventListener('click',e=>{if(e.target===lb)closeLb()});
+addEventListener('keydown',e=>{
+  if(!lb.classList.contains('open'))return;
+  if(e.key==='Escape')closeLb();
+  if(e.key==='ArrowRight')document.getElementById('lbNext').click();
+  if(e.key==='ArrowLeft')document.getElementById('lbPrev').click();
+});
+</script>
+</body>
+</html>

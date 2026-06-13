@@ -60,6 +60,9 @@ export interface RoomItem {
 }
 
 export interface RoomsSection {
+  /** Section heading (optional in CMS; the UI supplies a default when absent). */
+  label?: string;
+  title?: string;
   items: RoomItem[];
 }
 
@@ -181,6 +184,8 @@ export const DEFAULT_CONTENT: Record<Locale, PageContent> = {
       em: "vse življenje",
     },
     rooms: {
+      label: "Atelje · kaj izdelujemo",
+      title: "Vsak prostor, ena delavnica",
       items: [
         {
           numeral: "I",
@@ -252,7 +257,7 @@ export const DEFAULT_CONTENT: Record<Locale, PageContent> = {
     },
     socialLinks: SOCIALS,
     seo: {
-      title: "HRAST — fino mizarstvo",
+      title: "mazzidesign — fino mizarstvo",
       description:
         "Kuhinje, kopalnice, spalnice in posamezni kosi iz masivnega lesa — en atelje v Ljubljani.",
     },
@@ -276,6 +281,8 @@ export const DEFAULT_CONTENT: Record<Locale, PageContent> = {
       em: "for a lifetime",
     },
     rooms: {
+      label: "The atelier · what we make",
+      title: "Every room, one bench",
       items: [
         {
           numeral: "I",
@@ -347,7 +354,7 @@ export const DEFAULT_CONTENT: Record<Locale, PageContent> = {
     },
     socialLinks: SOCIALS,
     seo: {
-      title: "HRAST — fine woodwork",
+      title: "mazzidesign — fine woodwork",
       description:
         "Kitchens, bathrooms, bedrooms and singular pieces in solid wood — one atelier in Ljubljana.",
     },

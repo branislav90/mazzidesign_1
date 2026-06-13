@@ -11,8 +11,8 @@ export default function Footer({
   return (
     <footer className="border-t border-line py-9 text-[13px] text-soft">
       <div className="wrap flex flex-wrap items-center justify-between gap-[14px]">
-        <span className="font-serif text-[15px] uppercase leading-[1.08] tracking-brand text-ink">
-          Hrast
+        <span className="font-serif text-[15px] uppercase leading-[1.08] tracking-[.22em] text-ink">
+          mazzidesign
         </span>
         <span>{line}</span>
         <SocialIcons links={socials} size="sm" className="justify-end" />
