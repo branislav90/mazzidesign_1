@@ -22,6 +22,17 @@ The frontend ships with a built-in copy of all content (the seed), so the **land
 
 Every push to `main` redeploys automatically.
 
+> **Setting the Root Directory to `frontend` (step 3) is essential.** If you skip it,
+> Vercel builds at the repo root, doesn't detect Next.js, falls back to a static
+> preset, and fails with **"No Output Directory named `public` found"**. Fix: project
+> → Settings → Build and Deployment → Root Directory → `frontend` → Save → Redeploy.
+> Do **not** work around it with `vercel.json#outputDirectory` — Next.js on Vercel has
+> no static `public` output, so forcing one breaks server rendering.
+
+> **GitHub Pages won't work for this app** — Pages serves only static files, but the
+> frontend renders on the server (dynamic routes, the `/admin` auth proxy, middleware,
+> revalidation). Use Vercel (above) as the Next.js-native "Pages equivalent".
+
 ---
 
 ## Option B — Full stack on one host (one command)
