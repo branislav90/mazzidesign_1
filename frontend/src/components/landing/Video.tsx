@@ -1,10 +1,11 @@
 "use client";
 
-// Video showcase from hrast (.video-sec): 16:9 rounded frame, procedural
-// grain cover at brightness(.55) with a radial vignette, 96px frosted-glass
-// play circle (hover: scale 1.12 + sand fill). Activating plays the
-// CMS-configured film: youtubeId → youtube-nocookie iframe (autoplay),
-// videoUrl → native <video>, neither → a 4s "coming soon" note.
+// Video showcase from hrast (.video-sec): rounded frame with a procedural grain
+// cover at brightness(.55), radial vignette, and a 96px frosted-glass play
+// circle (hover: scale 1.12 + sand fill). Activating plays the CMS-configured
+// film: youtubeId → youtube-nocookie iframe, an Instagram reel/post URL →
+// Instagram embed (portrait frame), any other videoUrl → native <video>,
+// nothing set → a 4s "coming soon" note.
 
 import { useEffect, useRef, useState } from "react";
 import type { VideoSectionContent } from "@/lib/api/content";
@@ -12,7 +13,16 @@ import type { VideoDict } from "@/lib/locale";
 import Reveal from "./Reveal";
 import WoodGrain from "./WoodGrain";
 
-type Mode = "cover" | "youtube" | "video";
+type Mode = "cover" | "youtube" | "video" | "instagram";
+
+/** Builds the Instagram embed URL for a reel/post/tv link, else null. */
+function instagramEmbedUrl(url: string | null): string | null {
+  if (!url) return null;
+  const m = url.match(/instagram\.com\/(reel|reels|p|tv)\/([A-Za-z0-9_-]+)/);
+  if (!m) return null;
+  const type = m[1] === "reels" ? "reel" : m[1];
+  return `https://www.instagram.com/${type}/${m[2]}/embed`;
+}
 
 export default function Video({
   section,
@@ -32,9 +42,15 @@ export default function Video({
     [],
   );
 
+  const igEmbed = instagramEmbedUrl(section.videoUrl);
+  // Instagram reels are vertical — present the whole section in a portrait frame.
+  const portrait = !section.youtubeId && !!igEmbed;
+
   const play = () => {
     if (section.youtubeId) {
       setMode("youtube");
+    } else if (igEmbed) {
+      setMode("instagram");
     } else if (section.videoUrl) {
       setMode("video");
     } else {
@@ -56,7 +72,13 @@ export default function Video({
         </h2>
       </Reveal>
       <div className="wrap">
-        <Reveal className="relative aspect-video overflow-hidden rounded-[24px] bg-[#1A140E]">
+        <Reveal
+          className={`relative overflow-hidden rounded-[24px] bg-[#1A140E] ${
+            portrait
+              ? "mx-auto aspect-[9/16] w-full max-w-[420px]"
+              : "aspect-video"
+          }`}
+        >
           {mode === "cover" && (
             <button
               type="button"
@@ -108,6 +130,17 @@ export default function Video({
               allowFullScreen
               title={section.title}
               className="absolute inset-0 h-full w-full border-0"
+            />
+          )}
+
+          {mode === "instagram" && igEmbed && (
+            <iframe
+              src={igEmbed}
+              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+              allowFullScreen
+              scrolling="no"
+              title={section.title}
+              className="absolute inset-0 h-full w-full border-0 bg-white"
             />
           )}
 

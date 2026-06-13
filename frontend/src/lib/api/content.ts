@@ -226,9 +226,9 @@ export const DEFAULT_CONTENT: Record<Locale, PageContent> = {
       label: "Delavnica v gibanju",
       title: "Poglejte, kako nastane prostor",
       youtubeId: null,
-      videoUrl: null,
+      videoUrl: "https://www.instagram.com/reel/DY5JfOEAXU3/",
       captionTitle: "Od surove deske do končane kuhinje",
-      captionMeta: "3 min · posneto v našem ateljeju",
+      captionMeta: "Posnetek iz našega ateljeja",
     },
     testimonial: {
       quote:
@@ -323,9 +323,9 @@ export const DEFAULT_CONTENT: Record<Locale, PageContent> = {
       label: "The workshop, in motion",
       title: "Watch a room take shape",
       youtubeId: null,
-      videoUrl: null,
+      videoUrl: "https://www.instagram.com/reel/DY5JfOEAXU3/",
       captionTitle: "From rough board to finished kitchen",
-      captionMeta: "3 min · filmed in our atelier",
+      captionMeta: "A clip from our atelier",
     },
     testimonial: {
       quote:

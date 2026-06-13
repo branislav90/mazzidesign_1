@@ -202,18 +202,18 @@ public static class CmsSeeder
                 label = "Delavnica v gibanju",
                 title = "Oglejte si, kako nastane prostor",
                 youtubeId = (string?)null,
-                videoUrl = (string?)null,
+                videoUrl = "https://www.instagram.com/reel/DY5JfOEAXU3/",
                 captionTitle = "Od surove deske do dokončane kuhinje",
-                captionMeta = "3 min · posneto v našem ateljeju",
+                captionMeta = "Posnetek iz našega ateljeja",
             },
             new
             {
                 label = "The workshop, in motion",
                 title = "Watch a room take shape",
                 youtubeId = (string?)null,
-                videoUrl = (string?)null,
+                videoUrl = "https://www.instagram.com/reel/DY5JfOEAXU3/",
                 captionTitle = "From rough board to finished kitchen",
-                captionMeta = "3 min · filmed in our atelier",
+                captionMeta = "A clip from our atelier",
             });
 
         yield return ("testimonial",
