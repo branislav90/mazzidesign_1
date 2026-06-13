@@ -19,6 +19,7 @@ backend/storage/
 .env
 .env.local
 .env.*.local
+.env.prod
 
 # OS / editor
 .DS_Store

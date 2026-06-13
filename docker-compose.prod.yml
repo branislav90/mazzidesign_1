@@ -1,0 +1,84 @@
+# Full-stack production-style compose: database + API + web + mail sink.
+# One command brings up the complete, working app (landing, configurator,
+# admin, enquiries) — suitable for a customer demo on any Docker host.
+#
+#   cp .env.prod.example .env.prod
+#   # edit .env.prod (set PUBLIC_API_URL / PUBLIC_WEB_URL to your host)
+#   docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --build
+#
+# Then: web → http://<host>:3000 · API/Swagger → http://<host>:5080/swagger
+#       admin → http://<host>:3000/admin · outgoing mail → http://<host>:5025
+
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD}"
+      MSSQL_PID: Developer
+    volumes:
+      - mssql-data:/var/opt/mssql
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$${MSSQL_SA_PASSWORD}\" -Q 'SELECT 1' || exit 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
+
+  # Local SMTP sink — view the workshop's enquiry emails at http://<host>:5025
+  smtp4dev:
+    image: rnwood/smtp4dev:v3
+    ports:
+      - "5025:80"
+
+  api:
+    build:
+      context: ./backend
+    environment:
+      # Development environment applies EF migrations, seeds content + admin,
+      # and exposes Swagger — exactly what a demo wants.
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5080
+      ConnectionStrings__Default: "Server=mssql,1433;Database=woodwork;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True"
+      Jwt__Secret: "${JWT_SECRET}"
+      Admin__Email: "${ADMIN_EMAIL}"
+      Admin__Password: "${ADMIN_PASSWORD}"
+      Storage__Root: /app/storage
+      Smtp__Host: smtp4dev
+      Smtp__Port: "25"
+      Smtp__From: web@woodwork.local
+      Smtp__To: workshop@woodwork.local
+      Frontend__BaseUrl: "${PUBLIC_WEB_URL}"
+      Frontend__RevalidateSecret: "${REVALIDATE_SECRET}"
+      Cors__Origins__0: "${PUBLIC_WEB_URL}"
+    volumes:
+      - storage:/app/storage
+    depends_on:
+      mssql:
+        condition: service_healthy
+    ports:
+      - "5080:5080"
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        # Baked into the browser bundle — must be the API URL the customer's
+        # browser can reach (your host's public address), not the internal name.
+        NEXT_PUBLIC_API_URL: "${PUBLIC_API_URL}"
+    environment:
+      # Server-side calls (landing SSR, admin proxy) use the internal hostname.
+      API_URL: http://api:5080
+      REVALIDATE_SECRET: "${REVALIDATE_SECRET}"
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+
+volumes:
+  mssql-data:
+  storage:

@@ -147,7 +147,12 @@ export interface ProjectDto {
   images: MediaRef[];
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5080";
+// These fetches run server-side, so prefer the internal API_URL (e.g. the
+// docker service hostname) and fall back to the public one used by the browser.
+const API_URL =
+  process.env.API_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  "http://localhost:5080";
 
 const SOCIALS: SocialLinks = {
   instagram: "https://www.instagram.com/yourstudio",
