@@ -4,6 +4,7 @@
 
 import { cookies } from "next/headers";
 import type { Category, Species } from "@/lib/api/content";
+import { type Design, normalizeDesign } from "@/lib/design";
 
 export type Locale = "sl" | "en";
 
@@ -15,10 +16,9 @@ export function getLocale(): Locale {
   return value === "en" ? "en" : "sl";
 }
 
-/** Reads the "design" cookie ('stack' default | 'classic'). Server-only. */
-export function getDesign(): "stack" | "classic" {
-  const value = cookies().get("design")?.value;
-  return value === "classic" ? "classic" : "stack";
+/** Reads the "design" cookie → one of the six looks (default "modern"). Server-only. */
+export function getDesign(): Design {
+  return normalizeDesign(cookies().get("design")?.value);
 }
 
 export interface NavDict {
@@ -50,7 +50,7 @@ export interface UiDict {
   rooms: { label: string; title: string };
   gallery: GalleryDict;
   video: VideoDict;
-  design: { label: string; classic: string; stack: string; aria: string };
+  design: { label: string; aria: string; names: Record<Design, string> };
 }
 
 export const UI: Record<Locale, UiDict> = {
@@ -102,9 +102,15 @@ export const UI: Record<Locale, UiDict> = {
     },
     design: {
       label: "Videz",
-      classic: "Klasično",
-      stack: "Sodobno",
       aria: "Izbira videza strani",
+      names: {
+        modern: "Sodobno",
+        classic: "Klasično",
+        dark: "Temno",
+        dim: "Mrak",
+        dim2: "Kamen",
+        wood: "Les",
+      },
     },
   },
   en: {
@@ -155,9 +161,15 @@ export const UI: Record<Locale, UiDict> = {
     },
     design: {
       label: "Look",
-      classic: "Classic",
-      stack: "Modern",
       aria: "Choose page look",
+      names: {
+        modern: "Modern",
+        classic: "Classic",
+        dark: "Dark",
+        dim: "Dim",
+        dim2: "Stone",
+        wood: "Wood",
+      },
     },
   },
 };

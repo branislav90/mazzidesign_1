@@ -12,12 +12,14 @@ import type { RoomItem, RoomsSection } from "@/lib/api/content";
 import Reveal from "./Reveal";
 import WoodGrain, { patternForSpecies, type GrainFilter } from "./WoodGrain";
 
-// hrast-stack palette per card, cycled when there are more than four rooms.
+// Card tints from themeable CSS variables (--card{n}/--card{n}fg), cycled when
+// there are more than four rooms. The 4th card's background is the sand accent,
+// so its numeral uses the card foreground instead of sand to stay legible.
 const CARDS = [
-  { bg: "#EFE9DE", fg: "text-ink", num: "text-sand" },
-  { bg: "#221C16", fg: "text-[#EFE5D8]", num: "text-[#D8CDBC]" },
-  { bg: "#E5DCCB", fg: "text-ink", num: "text-sand" },
-  { bg: "#C8B49A", fg: "text-[#241C10]", num: "text-[#241C10]" },
+  { bg: "rgb(var(--card1))", fg: "rgb(var(--card1fg))" },
+  { bg: "rgb(var(--card2))", fg: "rgb(var(--card2fg))" },
+  { bg: "rgb(var(--card3))", fg: "rgb(var(--card3fg))" },
+  { bg: "rgb(var(--card4))", fg: "rgb(var(--card4fg))" },
 ];
 const CHAPTER_GRAINS: GrainFilter[] = ["w3", "w1", "w2", "w2"];
 
@@ -101,13 +103,20 @@ export default function RoomsStack({
                 ref={(el) => {
                   cardRefs.current[i] = el;
                 }}
-                style={{ top: `${96 + i * 20}px`, backgroundColor: c.bg }}
-                className={`sticky grid min-h-[400px] grid-cols-[1.1fr_.9fr] overflow-hidden rounded-[24px] border border-line will-change-transform max-[900px]:static max-[900px]:grid-cols-1 ${c.fg}`}
+                style={{
+                  top: `${96 + i * 20}px`,
+                  backgroundColor: c.bg,
+                  color: c.fg,
+                }}
+                className="sticky grid min-h-[400px] grid-cols-[1.1fr_.9fr] overflow-hidden rounded-[24px] border border-line will-change-transform max-[900px]:static max-[900px]:grid-cols-1"
               >
                 <div className="flex flex-col justify-between gap-[30px] p-[clamp(30px,4vw,56px)]">
                   <div>
                     <span
-                      className={`font-serif text-[16px] tracking-[.2em] ${c.num}`}
+                      className="font-serif text-[16px] tracking-[.2em]"
+                      style={{
+                        color: i % 4 === 3 ? c.fg : "rgb(var(--c-sand))",
+                      }}
                     >
                       {item.numeral}
                     </span>

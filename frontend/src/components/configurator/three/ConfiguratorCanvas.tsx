@@ -140,6 +140,18 @@ export default function ConfiguratorCanvas() {
   const targetY = Math.round((extents.y / 2) * 4) / 4;
   const shadowScale = useMemo(() => Math.max(3, radius * 3.4), [radius]);
 
+  // Match the 3D backdrop to the active theme's paper colour (data-theme on <html>).
+  const [stage, setStage] = useState("#F1ECE3");
+  useEffect(() => {
+    const raw = getComputedStyle(document.documentElement)
+      .getPropertyValue("--c-white")
+      .trim();
+    const ch = raw.split(/\s+/).map(Number);
+    if (ch.length === 3 && ch.every(Number.isFinite)) {
+      setStage(`rgb(${ch[0]}, ${ch[1]}, ${ch[2]})`);
+    }
+  }, []);
+
   return (
     <div className="relative h-full w-full">
       <div className="absolute inset-0" aria-hidden="true">
@@ -150,8 +162,8 @@ export default function ConfiguratorCanvas() {
         gl={{ preserveDrawingBuffer: true, antialias: true }}
         camera={{ fov: 32, near: 0.05, far: 80, position: [3, 2.2, 4] }}
       >
-        <color attach="background" args={["#F1ECE3"]} />
-        <fog attach="fog" args={["#F1ECE3", radius * 8 + 8, radius * 22 + 30]} />
+        <color attach="background" args={[stage]} />
+        <fog attach="fog" args={[stage, radius * 8 + 8, radius * 22 + 30]} />
 
         {/* manual lighting — no environment presets, no network assets */}
         <ambientLight intensity={0.85} color="#FFF6E8" />

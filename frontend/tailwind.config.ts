@@ -10,11 +10,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        white: "#F7F4EF",
-        ink: "#221C16",
-        sand: "#C8B49A",
-        soft: "#8A8074",
-        line: "rgb(34 28 22 / 0.11)", // #221C161C
+        // Themeable — driven by the CSS variables in globals.css (data-theme).
+        white: "rgb(var(--c-white) / <alpha-value>)",
+        ink: "rgb(var(--c-ink) / <alpha-value>)",
+        sand: "rgb(var(--c-sand) / <alpha-value>)",
+        soft: "rgb(var(--c-soft) / <alpha-value>)",
+        line: "rgb(var(--c-ink) / 0.11)",
       },
       fontFamily: {
         serif: ["var(--font-marcellus)", "Georgia", "serif"],

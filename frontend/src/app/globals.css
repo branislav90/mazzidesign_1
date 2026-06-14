@@ -3,13 +3,103 @@
 @tailwind utilities;
 
 :root {
-  /* Tokens from design/hrast.html */
-  --white: #f7f4ef;
-  --ink: #221c16;
-  --sand: #c8b49a;
-  --soft: #8a8074;
-  --line: #221c161c;
+  /* Palette tokens as space-separated RGB channels so Tailwind can apply alpha
+     (rgb(var(--c-x) / <alpha-value>)). Themes below override these. Default =
+     warm "hrast" palette. The 4 stack-card tints are themed too. */
+  --c-white: 247 244 239;
+  --c-ink: 34 28 22;
+  --c-sand: 200 180 154;
+  --c-soft: 138 128 116;
+  --card1: 239 233 222;
+  --card1fg: 34 28 22;
+  --card2: 34 28 22;
+  --card2fg: 239 229 216;
+  --card3: 229 220 203;
+  --card3fg: 34 28 22;
+  --card4: 200 180 154;
+  --card4fg: 36 28 16;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Explicit warm block so a subtree can reset to the default palette (e.g. the
+   plain admin) even when <html> carries a dark theme. */
+[data-theme="warm"] {
+  --c-white: 247 244 239;
+  --c-ink: 34 28 22;
+  --c-sand: 200 180 154;
+  --c-soft: 138 128 116;
+  --card1: 239 233 222;
+  --card1fg: 34 28 22;
+  --card2: 34 28 22;
+  --card2fg: 239 229 216;
+  --card3: 229 220 203;
+  --card3fg: 34 28 22;
+  --card4: 200 180 154;
+  --card4fg: 36 28 16;
+}
+
+/* design/hrast-dark.html */
+[data-theme="dark"] {
+  --c-white: 23 17 11;
+  --c-ink: 237 227 210;
+  --c-sand: 201 155 90;
+  --c-soft: 158 144 124;
+  --card1: 42 30 18;
+  --card1fg: 237 227 210;
+  --card2: 18 13 8;
+  --card2fg: 237 227 210;
+  --card3: 36 26 15;
+  --card3fg: 237 227 210;
+  --card4: 58 42 24;
+  --card4fg: 237 227 210;
+}
+
+/* design/hrast-dim.html */
+[data-theme="dim"] {
+  --c-white: 46 42 38;
+  --c-ink: 236 229 218;
+  --c-sand: 199 160 106;
+  --c-soft: 168 156 140;
+  --card1: 59 53 45;
+  --card1fg: 236 229 218;
+  --card2: 36 26 17;
+  --card2fg: 236 229 218;
+  --card3: 69 61 49;
+  --card3fg: 236 229 218;
+  --card4: 90 72 48;
+  --card4fg: 236 229 218;
+}
+
+/* design/hrast-dim2.html */
+[data-theme="dim2"] {
+  --c-white: 72 66 58;
+  --c-ink: 240 234 224;
+  --c-sand: 203 165 113;
+  --c-soft: 181 169 150;
+  --card1: 84 76 66;
+  --card1fg: 240 234 224;
+  --card2: 51 39 26;
+  --card2fg: 240 234 224;
+  --card3: 94 84 68;
+  --card3fg: 240 234 224;
+  --card4: 113 89 59;
+  --card4fg: 240 234 224;
+}
+
+/* design/hrast-wood.html */
+[data-theme="wood"] {
+  --c-white: 239 231 216;
+  --c-ink: 42 30 19;
+  --c-sand: 184 150 95;
+  --c-soft: 138 121 95;
+  --card1: 234 221 198;
+  --card1fg: 42 30 19;
+  --card2: 42 30 19;
+  --card2fg: 239 229 216;
+  --card3: 222 203 168;
+  --card3fg: 42 30 19;
+  --card4: 184 150 95;
+  --card4fg: 42 28 12;
 }
 
 html {
@@ -17,15 +107,18 @@ html {
 }
 
 body {
-  background: var(--white);
-  color: var(--ink);
+  background: rgb(var(--c-white));
+  color: rgb(var(--c-ink));
   font-size: 16.5px;
   line-height: 1.75;
+  transition:
+    background-color 0.5s var(--ease),
+    color 0.5s var(--ease);
 }
 
 ::selection {
-  background: var(--sand);
-  color: var(--ink);
+  background: rgb(var(--c-sand));
+  color: rgb(var(--c-ink));
 }
 
 @layer components {
@@ -41,7 +134,7 @@ body {
     font-size: 11.5px;
     letter-spacing: 0.32em;
     text-transform: uppercase;
-    color: var(--soft);
+    color: rgb(var(--c-soft));
     font-weight: 600;
   }
 
@@ -74,7 +167,7 @@ body {
   /* pill button with fill-from-below hover — .btn from hrast */
   .btn {
     display: inline-block;
-    border: 1px solid var(--ink);
+    border: 1px solid rgb(var(--c-ink));
     border-radius: 999px;
     padding: 18px 44px;
     font-size: 12.5px;
@@ -90,13 +183,13 @@ body {
     content: "";
     position: absolute;
     inset: 0;
-    background: var(--ink);
+    background: rgb(var(--c-ink));
     transform: translateY(101%);
     transition: transform 0.5s var(--ease);
     z-index: -1;
   }
   .btn:hover {
-    color: var(--white);
+    color: rgb(var(--c-white));
   }
   .btn:hover::before {
     transform: none;

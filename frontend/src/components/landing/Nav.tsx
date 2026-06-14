@@ -26,7 +26,7 @@ export default function Nav({ locale, t }: { locale: Locale; t: NavDict }) {
     <nav
       className={`fixed inset-x-0 top-0 z-[90] border-b [transition:background-color_.5s,border-color_.5s] ${
         solid
-          ? "border-line bg-[#F7F4EFE8] backdrop-blur-[14px]"
+          ? "border-line bg-white/90 backdrop-blur-[14px]"
           : "border-transparent"
       }`}
     >

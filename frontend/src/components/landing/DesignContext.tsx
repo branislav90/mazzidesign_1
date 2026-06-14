@@ -1,20 +1,18 @@
 "use client";
 
-// On-page design switcher state. Two directions differ in the Rooms and
-// Gallery sections:
-//   "stack"   — stacking room cards + parallax mosaic gallery (hrast-stack)
-//   "classic" — pinned-column rooms + horizontal strip gallery (hrast)
-// The choice is held in React state for instant switching and mirrored to a
-// `design` cookie so it survives reloads and the server renders the right one.
+// Holds the chosen design in React state (instant Rooms/Gallery layout swap) and
+// mirrors it to: the `design` cookie (so the server renders the last choice), and
+// `data-theme` on <html> (so the palette applies across every page — landing,
+// configurator, admin). The server already sets both on first paint, so there's
+// no flash; this only keeps them in sync on a live switch.
 
 import { createContext, useContext, useState } from "react";
-
-export type Design = "stack" | "classic";
+import { type Design, THEME_OF } from "@/lib/design";
 
 const DesignContext = createContext<{
   design: Design;
   setDesign: (d: Design) => void;
-}>({ design: "stack", setDesign: () => {} });
+}>({ design: "modern", setDesign: () => {} });
 
 export function DesignProvider({
   initial,
@@ -27,8 +25,8 @@ export function DesignProvider({
 
   const setDesign = (d: Design) => {
     setDesignState(d);
-    // 1 year, root path — read back server-side on the next request.
     document.cookie = `design=${d}; path=/; max-age=31536000; samesite=lax`;
+    document.documentElement.dataset.theme = THEME_OF[d];
   };
 
   return (

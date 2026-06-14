@@ -25,8 +25,14 @@ export default function AdminLayout({
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
 
+  // The admin is a plain neutral tool — keep it in the default palette even when
+  // the public site is on a dark theme (data-theme on <html>).
   if (pathname === "/admin/login") {
-    return <div className="min-h-screen bg-neutral-100">{children}</div>;
+    return (
+      <div data-theme="warm" className="min-h-screen bg-neutral-100">
+        {children}
+      </div>
+    );
   }
 
   async function handleLogout() {
@@ -40,7 +46,7 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-neutral-100 text-neutral-900">
+    <div data-theme="warm" className="flex min-h-screen bg-neutral-100 text-neutral-900">
       <aside className="flex w-56 shrink-0 flex-col border-r border-neutral-200 bg-white">
         <div className="border-b border-neutral-200 px-4 py-4">
           <p className="text-sm font-semibold">Mizarstvo — admin</p>
