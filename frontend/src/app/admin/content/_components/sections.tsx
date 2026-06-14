@@ -319,92 +319,23 @@ const roomsDef: SectionDef<RoomsJson> = {
 interface GalleryJson {
   label: string;
   title: string;
+  videos?: { src: string; poster?: string | null }[];
 }
 
 const galleryDef: SectionDef<GalleryJson> = {
-  title: "Galerija (naslov razdelka)",
-  defaults: { label: "", title: "" },
-  schema: z.object({ label: str, title: str.min(1) }),
-  serialize: (v) => v,
-  Form: ({ value, onChange }) => (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-      <TextField
-        label="Oznaka (label)"
-        value={value.label}
-        onChange={(label) => onChange({ ...value, label })}
-      />
-      <TextField
-        label="Naslov"
-        value={value.title}
-        onChange={(title) => onChange({ ...value, title })}
-      />
-    </div>
-  ),
-};
-
-// --- videoSection ---------------------------------------------------------------
-
-interface VideoJson {
-  label: string;
-  title: string;
-  youtubeId: string | null;
-  videoUrl: string | null;
-  captionTitle: string;
-  captionMeta: string;
-  coverImageId?: string | null;
-  instagramPosts?: string[];
-  videoPortrait?: boolean;
-  videoPoster?: string | null;
-  films?: { src: string; poster?: string | null }[];
-}
-
-const videoDef: SectionDef<VideoJson> = {
-  title: "Video / Instagram",
-  defaults: {
-    label: "",
-    title: "",
-    youtubeId: null,
-    videoUrl: null,
-    captionTitle: "",
-    captionMeta: "",
-    coverImageId: null,
-    instagramPosts: [],
-    videoPortrait: false,
-    videoPoster: "",
-    films: [],
-  },
+  title: "Galerija (naslov + videi)",
+  defaults: { label: "", title: "", videos: [] },
   schema: z.object({
     label: str,
-    title: str,
-    youtubeId: str.nullable(),
-    // Accepts an absolute URL or a site-relative path (e.g. /films/clip.mp4).
-    videoUrl: str.nullable(),
-    captionTitle: str,
-    captionMeta: str,
-    coverImageId: optionalImageId,
-    instagramPosts: z.array(urlOrEmpty).optional(),
-    videoPortrait: z.boolean().optional(),
-    videoPoster: str.optional(),
-    films: z
+    title: str.min(1),
+    videos: z
       .array(z.object({ src: str, poster: str.nullable().optional() }))
       .optional(),
   }),
-  serialize: (v) => ({
-    ...v,
-    youtubeId: v.youtubeId?.trim() ? v.youtubeId.trim() : null,
-    videoUrl: v.videoUrl?.trim() ? v.videoUrl.trim() : null,
-    videoPoster: v.videoPoster?.trim() ? v.videoPoster.trim() : "",
-    instagramPosts: (v.instagramPosts ?? [])
-      .map((u) => u.trim())
-      .filter((u) => u.length > 0),
-  }),
+  serialize: (v) => v,
   mirrorShared: (changed, other) => ({
     ...other,
-    coverImageId: changed.coverImageId ?? null,
-    instagramPosts: changed.instagramPosts ?? [],
-    videoPortrait: changed.videoPortrait ?? false,
-    videoPoster: changed.videoPoster ?? "",
-    films: changed.films ?? [],
+    videos: changed.videos ?? [],
   }),
   Form: ({ value, onChange }) => (
     <div className="space-y-4">
@@ -419,51 +350,11 @@ const videoDef: SectionDef<VideoJson> = {
           value={value.title}
           onChange={(title) => onChange({ ...value, title })}
         />
-        <TextField
-          label="YouTube ID (neobvezno)"
-          value={value.youtubeId ?? ""}
-          onChange={(youtubeId) => onChange({ ...value, youtubeId })}
-        />
-        <TextField
-          label="URL videa ali pot (npr. /films/clip.mp4)"
-          value={value.videoUrl ?? ""}
-          onChange={(videoUrl) => onChange({ ...value, videoUrl })}
-        />
-        <TextField
-          label="Slika plakata (poster, neobvezno)"
-          value={value.videoPoster ?? ""}
-          onChange={(videoPoster) => onChange({ ...value, videoPoster })}
-        />
-        <TextField
-          label="Napis — naslov"
-          value={value.captionTitle}
-          onChange={(captionTitle) => onChange({ ...value, captionTitle })}
-        />
-        <TextField
-          label="Napis — meta"
-          value={value.captionMeta}
-          onChange={(captionMeta) => onChange({ ...value, captionMeta })}
-        />
       </div>
-      <ImagePickerField
-        label="Naslovna slika videa"
-        value={value.coverImageId}
-        onChange={(coverImageId) => onChange({ ...value, coverImageId })}
-      />
-      <label className="flex items-center gap-2 text-sm text-neutral-700">
-        <input
-          type="checkbox"
-          checked={value.videoPortrait ?? false}
-          onChange={(e) =>
-            onChange({ ...value, videoPortrait: e.target.checked })
-          }
-        />
-        Pokončni video (9:16)
-      </label>
       <Repeater
-        label="Filmi (gostujemo sami — mreža videov)"
-        items={value.films ?? []}
-        onChange={(films) => onChange({ ...value, films })}
+        label="Videi v galeriji (gostujemo sami)"
+        items={value.videos ?? []}
+        onChange={(videos) => onChange({ ...value, videos })}
         makeNew={() => ({ src: "", poster: "" })}
         renderItem={(film, update) => (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -479,50 +370,6 @@ const videoDef: SectionDef<VideoJson> = {
             />
           </div>
         )}
-      />
-      <Repeater
-        label="Instagram objave (do 5 — najnovejše)"
-        items={value.instagramPosts ?? []}
-        onChange={(instagramPosts) => onChange({ ...value, instagramPosts })}
-        makeNew={() => ""}
-        renderItem={(url, update) => (
-          <TextField
-            label="Povezava do objave (npr. https://www.instagram.com/reel/…/ ali /p/…/)"
-            value={url}
-            onChange={update}
-          />
-        )}
-      />
-      <p className="text-xs text-neutral-500">
-        Če je seznam prazen, razdelek prikaže posamičen video (YouTube / URL).
-      </p>
-    </div>
-  ),
-};
-
-// --- testimonial -----------------------------------------------------------------
-
-interface TestimonialJson {
-  quote: string;
-  who: string;
-}
-
-const testimonialDef: SectionDef<TestimonialJson> = {
-  title: "Mnenje stranke",
-  defaults: { quote: "", who: "" },
-  schema: z.object({ quote: str.min(1), who: str }),
-  serialize: (v) => v,
-  Form: ({ value, onChange }) => (
-    <div className="space-y-4">
-      <TextAreaField
-        label="Citat"
-        value={value.quote}
-        onChange={(quote) => onChange({ ...value, quote })}
-      />
-      <TextField
-        label="Avtor"
-        value={value.who}
-        onChange={(who) => onChange({ ...value, who })}
       />
     </div>
   ),
@@ -769,8 +616,6 @@ export const SECTION_DEFS: Record<string, SectionDef<any>> = {
   statement: statementDef,
   rooms: roomsDef,
   gallery: galleryDef,
-  videoSection: videoDef,
-  testimonial: testimonialDef,
   stats: statsDef,
   contact: contactDef,
   socialLinks: socialDef,
@@ -783,8 +628,6 @@ export const SECTION_ORDER = [
   "statement",
   "rooms",
   "gallery",
-  "videoSection",
-  "testimonial",
   "stats",
   "contact",
   "socialLinks",

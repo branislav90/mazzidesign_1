@@ -36,6 +36,7 @@ export interface GalleryDict {
   prev: string;
   next: string;
   open: string;
+  play: string;
   lightbox: { label: string; close: string; prev: string; next: string };
 }
 
@@ -89,6 +90,7 @@ export const UI: Record<Locale, UiDict> = {
       prev: "Prejšnje",
       next: "Naslednje",
       open: "Odpri projekt",
+      play: "Predvajaj video",
       lightbox: {
         label: "Povečan pogled projekta",
         close: "Zapri",
@@ -148,6 +150,7 @@ export const UI: Record<Locale, UiDict> = {
       prev: "Previous",
       next: "Next",
       open: "Open project",
+      play: "Play video",
       lightbox: {
         label: "Enlarged project view",
         close: "Close",

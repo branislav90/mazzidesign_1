@@ -1,14 +1,18 @@
 "use client";
 
 // Gallery — the asymmetric parallax mosaic from design/hrast-stack.html.
-// Tiles are laid out on a 12-column grid with cycling spans; each tile's
-// wood/photo drifts on scroll (parallax), reveals a "+" on hover, and opens
-// the lightbox. Fed by CMS projects; the brief's category filter is kept above
-// the mosaic (dense auto-flow keeps the grid tidy as the set changes).
+// Tiles are projects (image/grain) AND self-hosted videos (poster + play badge);
+// each tile drifts on scroll (parallax) and opens the lightbox. Videos lead the
+// grid in the "all" view. The brief's category filter sits above the mosaic.
 
 import { useEffect, useRef, useState } from "react";
-import type { GallerySection, ProjectDto, Category } from "@/lib/api/content";
-import { CATEGORY_ORDER } from "@/lib/api/content";
+import type {
+  GallerySection,
+  ProjectDto,
+  Category,
+  GalleryTile,
+} from "@/lib/api/content";
+import { CATEGORY_ORDER, buildGalleryTiles } from "@/lib/api/content";
 import type { GalleryDict } from "@/lib/locale";
 import Reveal from "./Reveal";
 import Lightbox from "./Lightbox";
@@ -23,6 +27,39 @@ const TILES = [
   { span: "col-span-4 row-span-3", speed: 0.08 },
   { span: "col-span-8 row-span-3", speed: -0.06 },
 ];
+
+function TileMedia({ tile, index }: { tile: GalleryTile; index: number }) {
+  if (tile.kind === "video") {
+    return tile.poster ? (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={tile.poster}
+        alt=""
+        loading="lazy"
+        className="h-full w-full object-cover"
+      />
+    ) : (
+      <WoodGrain grain={grainForIndex(index)} viewBox="0 0 700 900" className="h-full w-full" />
+    );
+  }
+  const cover = tile.project.coverImage ?? tile.project.images[0] ?? null;
+  return cover ? (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={cover.mediumUrl || cover.url}
+      alt={cover.alt || tile.project.title}
+      loading="lazy"
+      className="h-full w-full object-cover"
+    />
+  ) : (
+    <WoodGrain
+      pattern={patternForSpecies(tile.project.species)}
+      grain={grainForIndex(index)}
+      viewBox="0 0 700 900"
+      className="h-full w-full"
+    />
+  );
+}
 
 export default function GalleryMosaic({
   heading,
@@ -42,6 +79,11 @@ export default function GalleryMosaic({
   );
   const filtered =
     filter === "all" ? projects : projects.filter((p) => p.category === filter);
+  // Videos lead the gallery, but only in the unfiltered view.
+  const tiles = buildGalleryTiles(
+    filtered,
+    filter === "all" ? heading.videos ?? [] : [],
+  );
 
   // Parallax: drift each tile's media as it crosses the viewport.
   useEffect(() => {
@@ -76,7 +118,7 @@ export default function GalleryMosaic({
       window.removeEventListener("resize", onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [filtered.length]);
+  }, [tiles.length]);
 
   const filterCls = (active: boolean) =>
     `border-b pb-[3px] text-[11.5px] font-semibold uppercase tracking-caps [transition:color_.4s,border-color_.4s] ${
@@ -117,16 +159,19 @@ export default function GalleryMosaic({
 
         {/* mosaic */}
         <div className="grid auto-rows-[13vh] grid-cols-12 gap-[clamp(14px,1.8vw,24px)] [grid-auto-flow:dense] max-[900px]:auto-rows-[11vh] max-[760px]:grid-cols-1 max-[760px]:auto-rows-auto">
-          {filtered.map((p, i) => {
-            const cover = p.coverImage ?? p.images[0] ?? null;
-            const tile = TILES[i % TILES.length];
+          {tiles.map((tile, i) => {
+            const span = TILES[i % TILES.length].span;
+            const label =
+              tile.kind === "video"
+                ? t.play
+                : `${t.open}: ${tile.project.title}`;
             return (
               <button
-                key={p.id}
+                key={tile.id}
                 type="button"
                 onClick={() => setOpen(i)}
-                aria-label={`${t.open}: ${p.title}`}
-                className={`group relative overflow-hidden rounded-[18px] border border-line text-left ${tile.span} max-[760px]:!col-span-1 max-[760px]:!row-auto max-[760px]:h-[46vh]`}
+                aria-label={label}
+                className={`group relative overflow-hidden rounded-[18px] border border-line text-left ${span} max-[760px]:!col-span-1 max-[760px]:!row-auto max-[760px]:h-[46vh]`}
               >
                 <span
                   ref={(el) => {
@@ -134,55 +179,51 @@ export default function GalleryMosaic({
                   }}
                   className="absolute inset-[-14%] block h-[128%] w-[128%] will-change-transform max-[760px]:inset-[-8%] max-[760px]:h-[116%] max-[760px]:w-[116%]"
                 >
-                  {cover ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={cover.mediumUrl || cover.url}
-                      alt={cover.alt || p.title}
-                      loading="lazy"
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <WoodGrain
-                      pattern={patternForSpecies(p.species)}
-                      grain={grainForIndex(i)}
-                      viewBox="0 0 700 900"
-                      className="h-full w-full"
-                    />
-                  )}
+                  <TileMedia tile={tile} index={i} />
                 </span>
                 <span
                   aria-hidden="true"
                   className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,#1A140EB0)] opacity-[.85] transition-opacity duration-500 group-hover:opacity-100"
                 />
-                <span
-                  aria-hidden="true"
-                  className="absolute right-4 top-4 z-[2] flex h-[38px] w-[38px] scale-90 items-center justify-center rounded-full border border-[#F7F4EF66] bg-[#F7F4EF1A] text-[18px] text-[#F7F4EF] opacity-0 backdrop-blur-[4px] [transition:opacity_.4s,transform_.4s_var(--ease),background-color_.3s] group-hover:scale-100 group-hover:bg-sand group-hover:opacity-100"
-                >
-                  +
-                </span>
-                <span className="absolute bottom-[18px] left-5 z-[2] translate-y-[6px] text-[#F7F4EF] opacity-90 [transition:opacity_.5s,transform_.5s_var(--ease)] group-hover:translate-y-0 group-hover:opacity-100">
-                  <span className="block font-serif text-[clamp(17px,1.7vw,22px)] leading-[1.08]">
-                    {p.title}
+                {tile.kind === "video" ? (
+                  <span
+                    aria-hidden="true"
+                    className="absolute left-1/2 top-1/2 z-[2] flex h-[62px] w-[62px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-[#F7F4EF66] bg-[#F7F4EF1A] backdrop-blur-[6px] [transition:transform_.5s_var(--ease),background-color_.4s,border-color_.4s] group-hover:scale-[1.12] group-hover:border-sand group-hover:bg-sand"
+                  >
+                    <span className="ml-[4px] block border-y-[10px] border-l-[16px] border-r-0 border-solid border-y-transparent border-l-[#F7F4EF]" />
                   </span>
-                  <span className="caps text-[#D8CDBC]">
-                    {t.species[p.species]} · {p.town}
-                  </span>
-                </span>
+                ) : (
+                  <>
+                    <span
+                      aria-hidden="true"
+                      className="absolute right-4 top-4 z-[2] flex h-[38px] w-[38px] scale-90 items-center justify-center rounded-full border border-[#F7F4EF66] bg-[#F7F4EF1A] text-[18px] text-[#F7F4EF] opacity-0 backdrop-blur-[4px] [transition:opacity_.4s,transform_.4s_var(--ease),background-color_.3s] group-hover:scale-100 group-hover:bg-sand group-hover:opacity-100"
+                    >
+                      +
+                    </span>
+                    <span className="absolute bottom-[18px] left-5 z-[2] translate-y-[6px] text-[#F7F4EF] opacity-90 [transition:opacity_.5s,transform_.5s_var(--ease)] group-hover:translate-y-0 group-hover:opacity-100">
+                      <span className="block font-serif text-[clamp(17px,1.7vw,22px)] leading-[1.08]">
+                        {tile.project.title}
+                      </span>
+                      <span className="caps text-[#D8CDBC]">
+                        {t.species[tile.project.species]} · {tile.project.town}
+                      </span>
+                    </span>
+                  </>
+                )}
               </button>
             );
           })}
         </div>
       </div>
 
-      {open !== null && filtered[open] && (
+      {open !== null && tiles[open] && (
         <Lightbox
-          projects={filtered}
+          tiles={tiles}
           index={open}
           onClose={() => setOpen(null)}
           onNav={(dir) =>
             setOpen((prev) =>
-              prev === null ? prev : (prev + dir + filtered.length) % filtered.length,
+              prev === null ? prev : (prev + dir + tiles.length) % tiles.length,
             )
           }
           t={t}

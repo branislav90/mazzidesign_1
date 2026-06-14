@@ -66,33 +66,16 @@ export interface RoomsSection {
   items: RoomItem[];
 }
 
+export interface GalleryVideo {
+  src: string;
+  poster?: string | null;
+}
+
 export interface GallerySection {
   label: string;
   title: string;
-}
-
-export interface VideoSectionContent {
-  label: string;
-  title: string;
-  youtubeId: string | null;
-  videoUrl: string | null;
-  captionTitle: string;
-  captionMeta: string;
-  coverImageId?: string | null;
-  coverImage?: MediaRef | null;
-  /** When set, the section renders a grid of these Instagram posts (latest first). */
-  instagramPosts?: string[];
-  /** Self-hosted film: render the frame in 9:16 when the clip is vertical. */
-  videoPortrait?: boolean;
-  /** Poster shown on the cover before the self-hosted film plays. */
-  videoPoster?: string | null;
-  /** Grid of self-hosted films (each a portrait card with poster → native video). */
-  films?: { src: string; poster?: string | null }[];
-}
-
-export interface TestimonialSection {
-  quote: string;
-  who: string;
+  /** Self-hosted films shown as gallery tiles (alongside project images). */
+  videos?: GalleryVideo[];
 }
 
 export interface StatItem {
@@ -136,8 +119,6 @@ export interface PageContent {
   statement: StatementSection;
   rooms: RoomsSection;
   gallery: GallerySection;
-  videoSection: VideoSectionContent;
-  testimonial: TestimonialSection;
   stats: StatsSection;
   contact: ContactSection;
   socialLinks: SocialLinks;
@@ -156,6 +137,31 @@ export interface ProjectDto {
   isFeatured: boolean;
   coverImage: MediaRef | null;
   images: MediaRef[];
+}
+
+// A gallery tile is either a self-hosted video or a project (image/grain).
+export type GalleryTile =
+  | { kind: "video"; id: string; src: string; poster: string | null }
+  | { kind: "project"; id: string; project: ProjectDto };
+
+/** Videos lead the gallery, followed by the (optionally filtered) projects. */
+export function buildGalleryTiles(
+  projects: ProjectDto[],
+  videos: GalleryVideo[] = [],
+): GalleryTile[] {
+  return [
+    ...videos.map(
+      (v, i): GalleryTile => ({
+        kind: "video",
+        id: `video-${i}`,
+        src: v.src,
+        poster: v.poster ?? null,
+      }),
+    ),
+    ...projects.map(
+      (p): GalleryTile => ({ kind: "project", id: p.id, project: p }),
+    ),
+  ];
 }
 
 // These fetches run server-side, so prefer the internal API_URL (e.g. the
@@ -229,27 +235,14 @@ export const DEFAULT_CONTENT: Record<Locale, PageContent> = {
         },
       ],
     },
-    gallery: { label: "Izbrana dela", title: "Iz galerije" },
-    videoSection: {
-      label: "Delavnica v gibanju",
-      title: "Iz delavnice",
-      youtubeId: null,
-      videoUrl: null,
-      captionTitle: "Od surove deske do končane kuhinje",
-      captionMeta: "Posnetek iz našega ateljeja",
-      instagramPosts: [],
-      videoPortrait: true,
-      videoPoster: "/films/workshop-poster.jpg",
-      films: [
+    gallery: {
+      label: "Izbrana dela",
+      title: "Iz galerije",
+      videos: [
         { src: "/films/workshop.mp4", poster: "/films/workshop-poster.jpg" },
         { src: "/films/film-2.mp4", poster: "/films/film-2-poster.jpg" },
         { src: "/films/film-3.mp4", poster: "/films/film-3-poster.jpg" },
       ],
-    },
-    testimonial: {
-      quote:
-        "„Izmerili so naše krive stene iz 19. stoletja in izdelali kuhinjo, ki se jim prilega, kot da bi tam zrasla.“",
-      who: "M. in T. Kovač — Ljubljana",
     },
     stats: {
       items: [
@@ -334,27 +327,14 @@ export const DEFAULT_CONTENT: Record<Locale, PageContent> = {
         },
       ],
     },
-    gallery: { label: "Selected works", title: "From the gallery" },
-    videoSection: {
-      label: "The workshop, in motion",
-      title: "From the workshop",
-      youtubeId: null,
-      videoUrl: null,
-      captionTitle: "From rough board to finished kitchen",
-      captionMeta: "A clip from our atelier",
-      instagramPosts: [],
-      videoPortrait: true,
-      videoPoster: "/films/workshop-poster.jpg",
-      films: [
+    gallery: {
+      label: "Selected works",
+      title: "From the gallery",
+      videos: [
         { src: "/films/workshop.mp4", poster: "/films/workshop-poster.jpg" },
         { src: "/films/film-2.mp4", poster: "/films/film-2-poster.jpg" },
         { src: "/films/film-3.mp4", poster: "/films/film-3-poster.jpg" },
       ],
-    },
-    testimonial: {
-      quote:
-        "“They measured our crooked 19th-century walls and made a kitchen that fits them like it grew there.”",
-      who: "M. & T. Kovač — Ljubljana",
     },
     stats: {
       items: [

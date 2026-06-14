@@ -10,8 +10,6 @@ import Hero from "@/components/landing/Hero";
 import Rooms from "@/components/landing/Rooms";
 import Statement from "@/components/landing/Statement";
 import Stats from "@/components/landing/Stats";
-import Testimonial from "@/components/landing/Testimonial";
-import Video from "@/components/landing/Video";
 import { getPageContent, getProjects } from "@/lib/api/content";
 import { getLocale, UI } from "@/lib/locale";
 
@@ -50,8 +48,6 @@ export default async function LandingPage() {
         }}
       />
       <Gallery heading={content.gallery} projects={projects} t={t.gallery} />
-      <Video section={content.videoSection} t={t.video} />
-      <Testimonial testimonial={content.testimonial} />
       <Stats items={content.stats.items} />
       <Cta contact={content.contact} socials={content.socialLinks} />
     </main>

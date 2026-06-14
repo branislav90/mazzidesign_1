@@ -192,59 +192,15 @@ public static class CmsSeeder
                 },
             });
 
+        var galleryVideos = new[]
+        {
+            new { src = "/films/workshop.mp4", poster = "/films/workshop-poster.jpg" },
+            new { src = "/films/film-2.mp4", poster = "/films/film-2-poster.jpg" },
+            new { src = "/films/film-3.mp4", poster = "/films/film-3-poster.jpg" },
+        };
         yield return ("gallery",
-            new { label = "Izbrana dela", title = "Iz galerije" },
-            new { label = "Selected works", title = "From the gallery" });
-
-        yield return ("videoSection",
-            new
-            {
-                label = "Delavnica v gibanju",
-                title = "Iz delavnice",
-                youtubeId = (string?)null,
-                videoUrl = (string?)null,
-                captionTitle = "Od surove deske do dokončane kuhinje",
-                captionMeta = "Posnetek iz našega ateljeja",
-                instagramPosts = Array.Empty<string>(),
-                videoPortrait = true,
-                videoPoster = "/films/workshop-poster.jpg",
-                films = new[]
-                {
-                    new { src = "/films/workshop.mp4", poster = "/films/workshop-poster.jpg" },
-                    new { src = "/films/film-2.mp4", poster = "/films/film-2-poster.jpg" },
-                    new { src = "/films/film-3.mp4", poster = "/films/film-3-poster.jpg" },
-                },
-            },
-            new
-            {
-                label = "The workshop, in motion",
-                title = "From the workshop",
-                youtubeId = (string?)null,
-                videoUrl = (string?)null,
-                captionTitle = "From rough board to finished kitchen",
-                captionMeta = "A clip from our atelier",
-                instagramPosts = Array.Empty<string>(),
-                videoPortrait = true,
-                videoPoster = "/films/workshop-poster.jpg",
-                films = new[]
-                {
-                    new { src = "/films/workshop.mp4", poster = "/films/workshop-poster.jpg" },
-                    new { src = "/films/film-2.mp4", poster = "/films/film-2-poster.jpg" },
-                    new { src = "/films/film-3.mp4", poster = "/films/film-3-poster.jpg" },
-                },
-            });
-
-        yield return ("testimonial",
-            new
-            {
-                quote = "Izmerili so naše krive stene iz 19. stoletja in izdelali kuhinjo, ki se jim prilega, kot bi tam zrasla.",
-                who = "M. in T. Kovač — Ljubljana",
-            },
-            new
-            {
-                quote = "They measured our crooked 19th-century walls and made a kitchen that fits them like it grew there.",
-                who = "M. & T. Kovač — Ljubljana",
-            });
+            new { label = "Izbrana dela", title = "Iz galerije", videos = galleryVideos },
+            new { label = "Selected works", title = "From the gallery", videos = galleryVideos });
 
         yield return ("stats",
             new

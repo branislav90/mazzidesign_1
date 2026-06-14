@@ -38,9 +38,6 @@ export default function Nav({ locale, t }: { locale: Locale; t: NavDict }) {
           <a href="#gallery" className={link}>
             {t.gallery}
           </a>
-          <a href="#film" className={link}>
-            {t.film}
-          </a>
         </div>
         <a
           href="#top"

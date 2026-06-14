@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RÉZA — woodwork</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1A1614;
+  --bg2:#221C18;
+  --cream:#F1E8DC;
+  --rose:#C9958D;
+  --coral:#FF5E46;
+  --coral-soft:#FF7E6A;
+  --brick:#AF4C3C;
+  --soft:#9A8B80;
+  --line:#F1E8DC18;
+  --ease:cubic-bezier(.19,1,.22,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--cream);font-family:"Outfit",sans-serif;font-size:17px;line-height:1.7;overflow-x:hidden}
+::selection{background:var(--coral);color:var(--bg)}
+h1,h2,h3,.serif{font-family:"Fraunces",serif;font-weight:400;line-height:1.02}
+.caps{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--coral-soft);font-weight:500}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1240px;margin:0 auto;padding:0 clamp(24px,5vw,80px)}
+
+/* fixed side rails */
+.rail{position:fixed;top:0;bottom:0;width:clamp(24px,5vw,80px);z-index:40;pointer-events:none;display:flex;align-items:center;justify-content:center}
+.rail.l{left:0}.rail.r{right:0}
+.rail span{writing-mode:vertical-rl;font-family:"Outfit";font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--soft)}
+.rail.l span{transform:rotate(180deg)}
+.rail::after{content:"";position:absolute;top:50%;height:0;width:1px;background:var(--line);transition:height 1.4s var(--ease) .3s}
+body.ready .rail::after{height:34%}
+.rail.l::after{top:8%}.rail.r::after{bottom:8%;top:auto}
+
+/* nav */
+nav{position:fixed;inset:0 0 auto;z-index:60;transition:background .5s}
+nav.solid{background:#1A1614D9;backdrop-filter:blur(14px)}
+.ni{display:flex;justify-content:space-between;align-items:center;height:72px}
+.brand{font-family:"Fraunces",serif;font-size:23px;letter-spacing:.02em}
+.brand b{color:var(--coral)}
+.nl{display:flex;gap:30px}
+.nl a{font-size:13px;color:var(--soft);transition:color .3s}
+.nl a:hover{color:var(--cream)}
+.nbtn{font-size:12px;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:9px 20px;transition:border-color .4s,color .4s,background .4s}
+.nbtn:hover{background:var(--coral);border-color:var(--coral);color:var(--bg)}
+
+/* hero with aperture */
+.hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative;padding:120px 0 70px}
+.aperture{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(74vh,82vw);aspect-ratio:1;border-radius:50%;overflow:hidden;z-index:0;
+  clip-path:circle(0% at 50% 50%);animation:iris 1.8s var(--ease) .2s forwards;
+}
+@keyframes iris{to{clip-path:circle(50% at 50% 50%)}}
+.aperture svg{position:absolute;inset:-10%;width:120%;height:120%;animation:spin 60s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.aperture::after{content:"";position:absolute;inset:0;background:radial-gradient(circle,transparent 40%,#1A1614 78%),linear-gradient(160deg,#1A161433,#1A1614AA)}
+.hero-content{position:relative;z-index:2}
+.hero .caps{display:block;margin-bottom:24px;opacity:0;animation:fade 1s 1s var(--ease) forwards}
+.hero h1{font-size:clamp(52px,9.5vw,150px);font-weight:300;letter-spacing:-.02em}
+.hero h1 .w{display:inline-block;opacity:0;transform:translateY(40px);animation:rise 1.1s var(--ease) forwards}
+.hero h1 .w:nth-child(1){animation-delay:.9s}
+.hero h1 .w:nth-child(2){animation-delay:1.02s}
+.hero h1 em{font-style:italic;color:var(--coral)}
+@keyframes rise{to{opacity:1;transform:none}}
+@keyframes fade{to{opacity:1}}
+.hero p{max-width:46ch;margin:30px auto 0;color:var(--soft);opacity:0;animation:fade 1s 1.4s var(--ease) forwards}
+.hero .scroll-cue{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);opacity:0;animation:fade 1s 1.8s forwards}
+.hero .scroll-cue .ring{width:30px;height:48px;border:1px solid var(--line);border-radius:20px;position:relative}
+.hero .scroll-cue .ring::after{content:"";position:absolute;top:8px;left:50%;transform:translateX(-50%);width:4px;height:8px;border-radius:2px;background:var(--coral);animation:dot 1.8s var(--ease) infinite}
+@keyframes dot{0%{opacity:0;top:8px}40%{opacity:1}80%,100%{opacity:0;top:28px}}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(34px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
+.rv.in{opacity:1;transform:none}
+
+/* manifesto */
+.manifesto{padding:clamp(100px,13vw,180px) 0;text-align:center}
+.manifesto .serif{font-size:clamp(28px,4.2vw,58px);font-weight:300;max-width:22ch;margin:26px auto 0;line-height:1.22}
+.manifesto .serif em{font-style:italic;color:var(--rose)}
+
+/* rooms — circular portals row */
+.portals{padding:clamp(40px,6vw,80px) 0 clamp(90px,11vw,150px)}
+.portals .head{text-align:center;margin-bottom:64px}
+.portals .head h2{font-size:clamp(36px,5vw,72px);font-weight:300;margin-top:20px}
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(16px,2.5vw,34px)}
+.portal{text-align:center;cursor:pointer}
+.portal .disc{
+  width:100%;aspect-ratio:1;border-radius:50%;overflow:hidden;position:relative;
+  border:1px solid var(--line);transition:transform .6s var(--ease);
+}
+.portal:nth-child(even) .disc{margin-top:46px}
+.portal:hover .disc{transform:scale(1.04)}
+.portal .disc svg{position:absolute;inset:-12%;width:124%;height:124%;transition:transform 1.1s var(--ease)}
+.portal:hover .disc svg{transform:scale(1.1) rotate(6deg)}
+.portal .disc::after{content:"";position:absolute;inset:0;border-radius:50%;box-shadow:inset 0 0 60px #1A1614AA}
+.portal .num{font-family:"Fraunces",serif;font-style:italic;color:var(--coral);font-size:15px;margin:18px 0 6px;display:block}
+.portal h3{font-size:clamp(19px,2vw,26px);font-weight:400}
+.portal p{color:var(--soft);font-size:13.5px;margin-top:6px;max-width:24ch;margin-left:auto;margin-right:auto}
+
+/* showcase split with big numerals */
+.showcase{border-top:1px solid var(--line);padding:clamp(80px,10vw,140px) 0}
+.srow{display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,90px);align-items:center;margin-bottom:clamp(70px,9vw,120px)}
+.srow:last-child{margin-bottom:0}
+.srow:nth-child(even) .stext{order:2}
+.spic{aspect-ratio:4/5;border-radius:14px;overflow:hidden;position:relative;border:1px solid var(--line)}
+.spic svg{position:absolute;inset:-8%;width:116%;height:116%}
+.spic .ph-num{position:absolute;top:18px;left:22px;z-index:2;font-family:"Fraunces",serif;font-size:clamp(60px,8vw,120px);color:#F1E8DC;opacity:.92;line-height:.8}
+.spic::after{content:"";position:absolute;inset:0;background:linear-gradient(160deg,#1A161455,transparent 50%)}
+.stext .caps{display:block;margin-bottom:16px}
+.stext h3{font-size:clamp(30px,3.8vw,52px);font-weight:300;margin-bottom:16px}
+.stext p{color:var(--soft);max-width:42ch}
+.stext .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.stext .tags span{border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-size:12.5px;color:var(--cream)}
+
+/* numbers ring */
+.stats{border-top:1px solid var(--line);padding:clamp(80px,10vw,130px) 0}
+.stats .wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:40px;text-align:center}
+.stat .serif{font-size:clamp(50px,6vw,90px);font-weight:300;display:block}
+.stat .serif i{font-style:normal;color:var(--coral)}
+.stat .caps{margin-top:8px;display:block;color:var(--soft)}
+
+/* cta with aperture */
+.cta-sec{position:relative;padding:clamp(110px,15vw,210px) 0;text-align:center;overflow:hidden;border-top:1px solid var(--line)}
+.cta-disc{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:min(60vh,80vw);aspect-ratio:1;border-radius:50%;overflow:hidden;z-index:0;opacity:.5}
+.cta-disc svg{position:absolute;inset:-10%;width:120%;height:120%}
+.cta-disc::after{content:"";position:absolute;inset:0;background:radial-gradient(circle,transparent 35%,#1A1614 76%)}
+.cta-sec .inner{position:relative;z-index:2}
+.cta-sec h2{font-size:clamp(42px,7.5vw,118px);font-weight:300;letter-spacing:-.02em}
+.cta-sec h2 em{font-style:italic;color:var(--coral)}
+.cta-sec p{color:var(--soft);max-width:44ch;margin:26px auto 38px}
+.cbtn{display:inline-flex;align-items:center;gap:12px;background:var(--coral);color:var(--bg);font-weight:600;font-size:15px;padding:18px 40px;border-radius:999px;transition:transform .4s var(--ease),background .3s}
+.cbtn:hover{transform:translateY(-3px);background:var(--coral-soft)}
+.socials{display:flex;gap:12px;justify-content:center;margin-top:34px}
+.socials a{width:46px;height:46px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;transition:background .3s,color .3s,transform .35s var(--ease)}
+.socials a:hover{background:var(--cream);color:var(--bg);transform:translateY(-3px)}
+.socials svg{width:17px;height:17px;fill:currentColor}
+
+footer{border-top:1px solid var(--line);padding:32px 0;color:var(--soft);font-size:13px}
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px}
+
+@media(max-width:900px){
+  .rail{display:none}
+  .nl{display:none}
+  .pgrid{grid-template-columns:1fr 1fr;gap:24px}
+  .portal:nth-child(even) .disc{margin-top:0}
+  .srow{grid-template-columns:1fr;gap:26px}
+  .srow:nth-child(even) .stext{order:0}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .aperture{clip-path:circle(50% at 50% 50%)}
+  .aperture svg{animation:none}
+  .hero .caps,.hero h1 .w,.hero p,.hero .scroll-cue{opacity:1;transform:none}
+  .rv{opacity:1;transform:none}
+  body.ready .rail::after{height:34%}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <pattern id="g1" width="640" height="58" patternUnits="userSpaceOnUse"><rect width="640" height="58" fill="#AF4C3C"/><rect y="4" width="640" height="10" fill="#C25A48"/><rect y="14" width="640" height="14" fill="#B85040"/><rect y="30" width="640" height="6" fill="#8E3A2D"/><rect y="38" width="640" height="9" fill="#9C4234"/><rect y="49" width="640" height="3" fill="#7A3026"/></pattern>
+    <pattern id="g2" width="640" height="64" patternUnits="userSpaceOnUse"><rect width="640" height="64" fill="#4A332F"/><rect y="5" width="640" height="12" fill="#5C423E"/><rect y="19" width="640" height="16" fill="#503A36"/><rect y="37" width="640" height="7" fill="#3A2826"/><rect y="46" width="640" height="10" fill="#42302C"/></pattern>
+    <pattern id="g3" width="640" height="50" patternUnits="userSpaceOnUse"><rect width="640" height="50" fill="#C9958D"/><rect y="4" width="640" height="9" fill="#D6A69E"/><rect y="14" width="640" height="12" fill="#C08980"/><rect y="28" width="640" height="6" fill="#AC756C"/><rect y="36" width="640" height="8" fill="#B98077"/></pattern>
+    <filter id="w1" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.012 0.085" numOctaves="6" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="52" xChannelSelector="R" yChannelSelector="G"/></filter>
+    <filter id="w2" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.010 0.07" numOctaves="6" seed="11" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="64" xChannelSelector="R" yChannelSelector="G"/></filter>
+    <filter id="w3" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.014 0.095" numOctaves="5" seed="23" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="44" xChannelSelector="R" yChannelSelector="G"/></filter>
+  </defs>
+</svg>
+
+<div class="rail l"><span>Réza · Atelier</span></div>
+<div class="rail r"><span>Ljubljana · MMXXVI</span></div>
+
+<nav id="nav">
+  <div class="wrap ni">
+    <a class="brand" href="#top">Réza<b>.</b></a>
+    <div class="nl"><a href="#rooms">Rooms</a><a href="#work">Work</a><a href="#contact">Contact</a></div>
+    <a class="nbtn" href="#contact">Enquire</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="aperture">
+    <svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-100" y="-100" width="1200" height="1200" fill="url(#g1)" filter="url(#w1)"/></svg>
+  </div>
+  <div class="hero-content">
+    <span class="caps">Woodwork atelier · since 1998</span>
+    <h1><span class="w">Cut</span> <span class="w"><em>true.</em></span></h1>
+    <p>Kitchens, bathrooms, bedrooms and singular furniture — drawn, milled and installed from solid wood, by one workshop.</p>
+  </div>
+  <div class="scroll-cue"><div class="ring"></div></div>
+</header>
+
+<section class="manifesto">
+  <div class="wrap rv">
+    <span class="caps">The atelier</span>
+    <p class="serif">One clean cut decides everything. We make <em>few things</em>, slowly, and we make them to last.</p>
+  </div>
+</section>
+
+<section class="portals" id="rooms">
+  <div class="wrap">
+    <div class="head rv">
+      <span class="caps">What we make</span>
+      <h2>Four rooms, one hand</h2>
+    </div>
+    <div class="pgrid">
+      <div class="portal rv"><div class="disc"><svg viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-60" y="-60" width="720" height="720" fill="url(#g1)" filter="url(#w1)"/></svg></div><span class="num">i</span><h3>Kitchens</h3><p>Built around how you cook.</p></div>
+      <div class="portal rv"><div class="disc"><svg viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-60" y="-60" width="720" height="720" fill="url(#g3)" filter="url(#w3)"/></svg></div><span class="num">ii</span><h3>Bathrooms</h3><p>Wood that shrugs off steam.</p></div>
+      <div class="portal rv"><div class="disc"><svg viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-60" y="-60" width="720" height="720" fill="url(#g2)" filter="url(#w2)"/></svg></div><span class="num">iii</span><h3>Bedrooms</h3><p>Storage that reads as architecture.</p></div>
+      <div class="portal rv"><div class="disc"><svg viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-60" y="-60" width="720" height="720" fill="url(#g1)" filter="url(#w2)"/></svg></div><span class="num">iv</span><h3>Singular pieces</h3><p>Made once, for one address.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="showcase" id="work">
+  <div class="wrap">
+    <div class="srow rv">
+      <div class="spic"><svg viewBox="0 0 700 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-56" y="-64" width="812" height="928" fill="url(#g1)" filter="url(#w1)"/></svg><span class="ph-num">01</span></div>
+      <div class="stext">
+        <span class="caps">Oak · Ljubljana · 2026</span>
+        <h3>Penthouse kitchen</h3>
+        <p>A full galley in quarter-sawn oak with a stone island, integrated appliances and soft-close throughout. Measured, drawn in 3D and installed in three days.</p>
+        <div class="tags"><span>Quarter-sawn oak</span><span>Stone top</span><span>Soft-close</span></div>
+      </div>
+    </div>
+    <div class="srow rv">
+      <div class="spic"><svg viewBox="0 0 700 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-56" y="-64" width="812" height="928" fill="url(#g2)" filter="url(#w2)"/></svg><span class="ph-num">02</span></div>
+      <div class="stext">
+        <span class="caps">Walnut · Bled · 2025</span>
+        <h3>Library wall</h3>
+        <p>Nine linear metres of floor-to-ceiling walnut shelving with a rolling ladder and concealed lighting, fitted to a century-old room with crooked walls.</p>
+        <div class="tags"><span>American walnut</span><span>Rolling ladder</span><span>Concealed LED</span></div>
+      </div>
+    </div>
+    <div class="srow rv">
+      <div class="spic"><svg viewBox="0 0 700 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-56" y="-64" width="812" height="928" fill="url(#g3)" filter="url(#w3)"/></svg><span class="ph-num">03</span></div>
+      <div class="stext">
+        <span class="caps">Ash · Maribor · 2025</span>
+        <h3>Floating vanity</h3>
+        <p>A wall-hung double vanity in white-oiled ash with sealed end grain — engineered to live happily in the wettest room of the house.</p>
+        <div class="tags"><span>White-oiled ash</span><span>Wall-hung</span><span>Sealed grain</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="wrap">
+    <div class="stat rv"><span class="serif"><span class="cn" data-to="27">0</span></span><span class="caps">Years at the bench</span></div>
+    <div class="stat rv"><span class="serif"><span class="cn" data-to="400">0</span><i>+</i></span><span class="caps">Rooms delivered</span></div>
+    <div class="stat rv"><span class="serif"><span class="cn" data-to="5">0</span><i>yr</i></span><span class="caps">Warranty</span></div>
+    <div class="stat rv"><span class="serif"><span class="cn" data-to="1">0</span></span><span class="caps">Workshop, start to finish</span></div>
+  </div>
+</div>
+
+<section class="cta-sec" id="contact">
+  <div class="cta-disc"><svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="-100" y="-100" width="1200" height="1200" fill="url(#g1)" filter="url(#w2)"/></svg></div>
+  <div class="wrap inner rv">
+    <span class="caps">Commissions 2026</span>
+    <h2>Let's cut <em>your</em> room</h2>
+    <p>Tell us about the space. We visit, measure, and return with a 3D design and a fixed quote — no obligation.</p>
+    <a class="cbtn" href="mailto:atelier@reza.si">Enquire →</a>
+    <div class="socials">
+      <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2Zm0 4.9a4.9 4.9 0 1 1 0 9.8 4.9 4.9 0 0 1 0-9.8Zm0 1.8a3.1 3.1 0 1 0 0 6.2 3.1 3.1 0 0 0 0-6.2Zm5.1-3.2a1.15 1.15 0 1 1 0 2.3 1.15 1.15 0 0 1 0-2.3Z"/></svg></a>
+      <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M13.5 21v-7.6h2.6l.4-3h-3V8.5c0-.9.2-1.5 1.5-1.5h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.8v3h2.6V21h3.1Z"/></svg></a>
+      <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2 26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8ZM10 15.2V8.8L15.5 12 10 15.2Z"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <span class="brand" style="font-size:17px">Réza<b style="color:var(--coral)">.</b></span>
+    <span>Kitchens · Bathrooms · Bedrooms · Singular · © 2026</span>
+    <span>Obrtna cona 12, Ljubljana</span>
+  </div>
+</footer>
+
+<script>
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+requestAnimationFrame(()=>document.body.classList.add('ready'));
+
+const nav=document.getElementById('nav');
+addEventListener('scroll',()=>nav.classList.toggle('solid',scrollY>40),{passive:true});
+
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){e.target.classList.add('in');const c=e.target.querySelector?.('.cn');if(c)count(c);io.unobserve(e.target)}
+}),{threshold:.16});
+document.querySelectorAll('.rv,.stat').forEach(el=>io.observe(el));
+function count(el){
+  if(el.dataset.done)return;el.dataset.done=1;
+  const to=+el.dataset.to;if(reduced){el.textContent=to;return}
+  const t0=performance.now(),dur=1500;
+  (function t(n){const p=Math.min((n-t0)/dur,1),e=1-Math.pow(1-p,3);el.textContent=Math.round(to*e);if(p<1)requestAnimationFrame(t)})(t0);
+}
+
+/* parallax discs */
+const discs=[...document.querySelectorAll('.portal .disc svg, .spic svg')];
+addEventListener('scroll',()=>{
+  if(reduced)return;
+  discs.forEach(s=>{
+    const r=s.getBoundingClientRect();
+    if(r.bottom<0||r.top>innerHeight)return;
+    const off=(r.top+r.height/2-innerHeight/2)*0.04;
+    s.style.transform=`translateY(${off}px)`;
+  });
+},{passive:true});
+</script>
+</body>
+</html>
